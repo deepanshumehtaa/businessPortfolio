@@ -1,25 +1,29 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0a0a0a;
-  --foreground: #ededed;
-  --primary: #c5001a;
-  --primary-hover: #a00015;
-  --accent: #25d366;
-  --card-bg: rgba(23, 23, 23, 0.7);
-  --card-border: rgba(255, 255, 255, 0.08);
-  --glow-color: rgba(197, 0, 26, 0.3);
+  --primary-color: #00b87c;
+  --primary-dark: #008f60;
+  --primary-light: #e6f9f3;
+  --primary-glow: rgba(0, 184, 124, 0.4);
+  --neon-accent: #00f5a0;
+  
+  --dark-navy: #070d19;
+  --dark-navy-card: #0b172a;
+
+  --background: #f8fafc;
+  --foreground: #1e293b;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-primary: var(--primary);
-  --color-primary-hover: var(--primary-hover);
-  --color-accent: var(--accent);
-  --color-card-bg: var(--card-bg);
-  --color-card-border: var(--card-border);
-  --font-sans: var(--font-geist-sans);
+  --color-primary: var(--primary-color);
+  --color-primary-dark: var(--primary-dark);
+  --color-primary-light: var(--primary-light);
+  --color-neon: var(--neon-accent);
+  --color-dark-navy: var(--dark-navy);
+  --font-sans: var(--font-body), system-ui, sans-serif;
+  --font-heading: var(--font-heading), sans-serif;
   --font-mono: var(--font-geist-mono);
 }
 
@@ -28,10 +32,106 @@
   scroll-behavior: smooth;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading), system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+/* Custom Cyber Cursor (Desktop Only) */
+@media (min-width: 992px) {
+  body, a, button, input, select, textarea, .cursor-none {
+    cursor: none !important;
+  }
+}
+
+/* Sci-Fi Cyber Diamond Core Pointer */
+.custom-cursor-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  background-color: var(--neon-accent);
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%) rotate(45deg);
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), width 0.2s ease, height 0.2s ease, background-color 0.2s ease;
+  box-shadow: 0 0 10px var(--neon-accent), 0 0 20px rgba(0, 245, 160, 0.6);
+  border: 1px solid #ffffff;
+}
+
+.custom-cursor-dot.active {
+  transform: translate(-50%, -50%) rotate(90deg) scale(1.6);
+  background-color: #ffffff;
+  box-shadow: 0 0 15px #ffffff, 0 0 25px var(--neon-accent);
+}
+
+/* Tech HUD Target Crosshair Ring */
+.custom-cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 44px;
+  height: 44px;
+  border: 1.5px dashed rgba(0, 184, 124, 0.85);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%) rotate(0deg);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), width 0.25s ease, height 0.25s ease, border-color 0.25s ease, background-color 0.25s ease;
+  box-shadow: 0 0 15px rgba(0, 184, 124, 0.3);
+}
+
+.custom-cursor-ring.active {
+  transform: translate(-50%, -50%) rotate(45deg) scale(1.5);
+  border: 2px solid var(--neon-accent);
+  background-color: rgba(0, 245, 160, 0.12);
+  box-shadow: 0 0 30px var(--primary-glow);
+}
+
+/* Tech Crosshair Ticks */
+.cursor-tick {
+  position: absolute;
+  background-color: var(--neon-accent);
+  transition: all 0.2s ease;
+}
+
+.tick-top {
+  top: -6px;
+  left: 50%;
+  width: 2px;
+  height: 6px;
+  transform: translateX(-50%);
+}
+
+.tick-bottom {
+  bottom: -6px;
+  left: 50%;
+  width: 2px;
+  height: 6px;
+  transform: translateX(-50%);
+}
+
+.tick-left {
+  left: -6px;
+  top: 50%;
+  width: 6px;
+  height: 2px;
+  transform: translateY(-50%);
+}
+
+.tick-right {
+  right: -6px;
+  top: 50%;
+  width: 6px;
+  height: 2px;
+  transform: translateY(-50%);
+}
+
 body {
-  background-color: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), system-ui, sans-serif;
+  background-color: #f8fafc;
+  color: #334155;
+  font-family: var(--font-body), system-ui, sans-serif;
   overflow-x: hidden;
 }
 
@@ -40,64 +140,67 @@ body {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #0d0d0d;
+  background: #f1f5f9;
 }
 ::-webkit-scrollbar-thumb {
-  background: #262626;
+  background: #94a3b8;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--primary);
+  background: var(--primary-color);
 }
 
-/* Custom Utilities for Glassmorphism & Glow */
-.glassmorphism {
-  background: rgba(15, 15, 15, 0.75);
+/* High Contrast Light Theme Cards */
+.card-light-hover {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-light-hover:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0, 184, 124, 0.2);
+  border-color: var(--primary-color);
+}
+
+/* Dark Roadmap Cards */
+.zigzag-card-dark {
+  background: rgba(11, 23, 42, 0.95);
   backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(0, 245, 160, 0.35);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease;
 }
 
-.glow-card:hover {
-  box-shadow: 0 0 25px var(--glow-color);
-  border-color: rgba(197, 0, 26, 0.5);
+.zigzag-card-dark:hover {
+  border-color: var(--neon-accent);
+  box-shadow: 0 0 25px rgba(0, 245, 160, 0.35);
   transform: translateY(-4px);
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.neon-text-glow {
-  text-shadow: 0 0 10px rgba(197, 0, 26, 0.6);
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--neon-accent);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--neon-accent);
+  animation: pulse-dot-ani 1.5s infinite alternate;
 }
 
-.bg-grid-pattern {
-  background-size: 40px 40px;
-  background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+@keyframes pulse-dot-ani {
+  0% { transform: scale(0.8); opacity: 0.7; }
+  100% { transform: scale(1.4); opacity: 1; }
 }
 
-.pulse-glow {
-  animation: pulse-glow-ani 2s infinite alternate;
-}
-
-@keyframes pulse-glow-ani {
-  0% {
-    box-shadow: 0 0 5px rgba(197, 0, 26, 0.2);
-  }
-  100% {
-    box-shadow: 0 0 20px rgba(197, 0, 26, 0.6);
-  }
-}
-
-/* Wave & Animations */
 .animate-fade-in {
-  animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;

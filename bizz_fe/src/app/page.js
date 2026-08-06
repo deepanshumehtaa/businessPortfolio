@@ -3,37 +3,34 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import DemoModal from "@/components/DemoModal";
+import StarsBackground from "@/components/StarsBackground";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState("Frontend");
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState("demo");
-  const [heroSlide, setHeroSlide] = useState(0);
+  const [heroTab, setHeroTab] = useState(0);
 
-  const heroSlides = [
+  const heroTabsData = [
     {
-      tag: "Best Software Agency",
-      title: "Custom Software & AI Automation Solutions",
-      desc: "We build scalable custom software solutions, enterprise CRM/ERP cloud platforms, mobile applications, and Generative AI tools to automate your operations.",
+      title: "Custom Software & AI Automation",
+      subtitle: "We build scalable custom software solutions, enterprise CRM/ERP cloud platforms, mobile applications, and AI automation tools for startups, SMEs, and growing enterprises.",
+      tag: "Best Software Company in Kolkata",
+      pills: ["Custom ERP/CRM", "SaaS Cloud Agency", "AI Automation Tools", "Mobile Apps"]
     },
     {
-      tag: "High ROI Channels",
-      title: "Performance Marketing & Acquisition Systems",
-      desc: "Note: We are not a social media posting agency. We build performance ad funnels, search engine domination strategies, and conversion analytics to scale your revenue.",
+      title: "Performance Digital Growth Engine",
+      subtitle: "Note: We are strictly NOT a social media posting company. We specialize in high-intent PPC ad campaigns, search engine dominance, and data analytics.",
+      tag: "High ROAS Acquisition",
+      pills: ["Google Search PPC", "Meta Funnel Ads", "GA4 Conversion Analytics", "Landing Page CRO"]
     },
     {
-      tag: "Verified Integrations",
-      title: "WhatsApp API & RCS Messaging Engines",
-      desc: "Scale customer support and broadcasts with up to 98% open rates directly in WhatsApp and native mobile messaging dialers.",
+      title: "WhatsApp API & RCS Messaging",
+      subtitle: "Scale sales and customer support directly inside WhatsApp & native mobile SMS inboxes with up to 98% open rates.",
+      tag: "Verified Meta Integration",
+      pills: ["Meta Verified API", "Transaction Alerts", "Interactive Flow Bots", "RCS Rich Carousels"]
     }
   ];
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setHeroSlide((prev) => (prev + 1) % heroSlides.length);
-    }, 8000);
-    return () => clearInterval(timer);
-  }, [heroSlides.length]);
 
   const handleOpenModal = (type) => {
     setModalType(type);
@@ -42,140 +39,138 @@ export default function Home() {
 
   const techStack = {
     Frontend: [
-      { name: "Next.js", desc: "For Server-Side Rendering and high-speed web apps" },
-      { name: "React", desc: "For interactive, modular clientside component builds" },
-      { name: "Tailwind CSS", desc: "For highly custom responsive styles" },
-      { name: "TypeScript", desc: "For compile-time type-safety" },
+      { name: "Next.js", category: "React Framework", desc: "For Server-Side Rendering and fast web apps" },
+      { name: "React", category: "UI Library", desc: "For modular interactive component builds" },
+      { name: "Tailwind CSS", category: "CSS Framework", desc: "For custom responsive styling" },
+      { name: "TypeScript", category: "Language", desc: "For type-safe code logic" },
     ],
     Backend: [
-      { name: "Django", desc: "For bulletproof authentication & safe ORM logic" },
-      { name: "Python", desc: "For scalable machine learning and server logic" },
-      { name: "FastAPI", desc: "For asynchronous, high-throughput microservice endpoints" },
-      { name: "Node.js", desc: "For fast backend API systems" },
+      { name: "Django", category: "Python Framework", desc: "For secure Class-Based API views & ORM" },
+      { name: "Python", category: "Language", desc: "For ML models and scalable microservices" },
+      { name: "FastAPI", category: "Async Framework", desc: "For high-performance API endpoints" },
+      { name: "Node.js", category: "Runtime", desc: "For fast backend API microservices" },
     ],
     Mobile: [
-      { name: "Flutter", desc: "For swift cross-platform layouts on iOS & Android" },
-      { name: "React Native", desc: "For React-driven cross-platform applications" },
-      { name: "Swift", desc: "For memory-critical native iOS application code" },
-      { name: "Kotlin", desc: "For native Android features and SDKs" },
+      { name: "Flutter", category: "Cross-Platform", desc: "For fast iOS & Android mobile apps" },
+      { name: "React Native", category: "Cross-Platform", desc: "For React-driven cross-platform builds" },
+      { name: "Swift", category: "iOS Native", desc: "For native iOS performance" },
+      { name: "Kotlin", category: "Android Native", desc: "For native Android features & SDKs" },
     ],
-    "Cloud & DevOps": [
-      { name: "PostgreSQL", desc: "For relational business data structures" },
-      { name: "AWS", desc: "For highly available cloud migrations" },
-      { name: "Docker", desc: "For isolated container environments" },
-      { name: "Kubernetes", desc: "For container orchestration at scale" },
+    "Cloud & Database": [
+      { name: "PostgreSQL", category: "Database", desc: "For relational enterprise data" },
+      { name: "AWS", category: "Cloud Provider", desc: "For cloud infrastructure" },
+      { name: "Docker", category: "Container", desc: "For isolated deployment environments" },
+      { name: "Kubernetes", category: "Orchestration", desc: "For scaling cloud containers" },
     ],
-    "AI & Data": [
-      { name: "PyTorch", desc: "For neural networks and model development" },
-      { name: "TensorFlow", desc: "For large-scale deep learning models" },
-      { name: "OpenAI API", "desc": "For custom Generative AI agents" },
-      { name: "Pandas", desc: "For processing high-volume analytical sheets" },
+    "AI & Data Science": [
+      { name: "PyTorch", category: "AI Framework", desc: "For deep learning model design" },
+      { name: "TensorFlow", category: "AI Framework", desc: "For neural automation pipeline builds" },
+      { name: "OpenAI API", category: "Generative AI", desc: "For RAG agents & LLM integration" },
+      { name: "Pandas", category: "Data Science", desc: "For processing high-volume datasets" },
     ],
   };
 
   return (
-    <div className="flex flex-col gap-24">
-      {/* 1. FUTURISTIC HERO SECTION */}
-      <section className="relative min-h-[85vh] flex items-center max-w-7xl mx-auto px-6 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center w-full">
-          {/* Hero Left Content */}
+    <div className="flex flex-col">
+      {/* 1. HERO SECTION */}
+      <section className="relative overflow-hidden py-16 md:py-24 bg-gradient-to-b from-[#e6f9f3] via-white to-slate-100 border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          
+          {/* Left Content */}
           <div className="lg:col-span-7 flex flex-col gap-6">
-            <div className="inline-flex items-center gap-2 self-start bg-primary/10 border border-primary/20 rounded-full px-4 py-1.5 text-xs text-primary font-medium tracking-wide">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
-              {heroSlides[heroSlide].tag}
-            </div>
+            <span className="inline-flex items-center gap-2 self-start bg-[#e6f9f3] border border-[#00b87c]/40 text-[#008f60] px-4 py-1.5 rounded-full text-xs font-extrabold uppercase tracking-wider shadow-xs">
+              <span className="pulse-dot"></span> {heroTabsData[heroTab].tag}
+            </span>
 
-            <h1 className="text-4xl md:text-6xl font-black tracking-tight text-white leading-tight transition-all duration-500">
-              {heroSlides[heroSlide].title.split(" & ").map((word, i) => (
+            <h1 className="text-4xl md:text-6xl font-black text-slate-950 tracking-tight leading-tight">
+              {heroTabsData[heroTab].title.split(" & ").map((part, i) => (
                 <span key={i}>
                   {i > 0 && " & "}
-                  {word === "AI Automation" || word === "Acquisition Systems" || word === "RCS Messaging Engines" ? (
-                    <span className="text-primary text-transparent bg-clip-text bg-gradient-to-r from-primary to-rose-500">{word}</span>
+                  {part === "AI Automation" || part === "Acquisition" || part === "RCS Messaging" ? (
+                    <span className="text-[#00b87c]">{part}</span>
                   ) : (
-                    word
+                    part
                   )}
                 </span>
               ))}
             </h1>
 
-            <p className="text-zinc-400 text-base md:text-lg leading-relaxed max-w-2xl transition-all duration-500">
-              {heroSlides[heroSlide].desc}
+            <p className="text-slate-700 text-base md:text-lg leading-relaxed font-medium">
+              {heroTabsData[heroTab].subtitle}
             </p>
 
+            {/* Interactive Pills */}
+            <div className="flex flex-wrap gap-2 my-2">
+              {heroTabsData[heroTab].pills.map((pill, idx) => (
+                <span key={idx} className="bg-white border border-slate-300 text-slate-900 px-3.5 py-1.5 rounded-full text-xs font-bold shadow-xs">
+                  ✓ {pill}
+                </span>
+              ))}
+            </div>
+
+            {/* Hero CTA Buttons */}
             <div className="flex flex-wrap gap-4 mt-2">
               <button
                 onClick={() => handleOpenModal("demo")}
-                className="px-8 py-3 bg-primary hover:bg-primary-hover text-white rounded-full font-bold transition-all shadow-lg shadow-primary/25 hover:shadow-primary/45 cursor-pointer text-sm"
+                className="px-8 py-3.5 bg-[#00b87c] hover:bg-[#008f60] text-white rounded-full font-extrabold transition-all shadow-lg shadow-[#00b87c]/30 hover:shadow-[#00b87c]/50 cursor-pointer text-sm tracking-wide"
               >
-                Book a Demo
+                Get A Free Quote &rarr;
               </button>
-              <button
-                onClick={() => handleOpenModal("call")}
-                className="px-8 py-3 border border-zinc-800 hover:border-zinc-500 text-zinc-300 rounded-full font-semibold transition-all cursor-pointer text-sm"
+              <a
+                href="tel:+918961716583"
+                className="px-8 py-3.5 bg-white border border-slate-300 hover:border-[#00b87c] text-slate-900 rounded-full font-extrabold transition-all cursor-pointer text-sm shadow-xs flex items-center gap-2"
               >
-                Schedule a Call
-              </button>
+                📞 Call: +91-8961716583
+              </a>
             </div>
 
-            {/* Quick Hero Tabs */}
-            <div className="flex gap-2 border-t border-white/5 pt-6 mt-4">
-              {heroSlides.map((slide, index) => (
-                <button
-                  key={index}
-                  onClick={() => setHeroSlide(index)}
-                  className={`flex-1 text-left p-3.5 rounded-xl border transition-all cursor-pointer ${
-                    heroSlide === index
-                      ? "bg-zinc-900 border-primary/30 text-white"
-                      : "bg-transparent border-transparent text-zinc-500 hover:text-zinc-300"
-                  }`}
-                >
-                  <div className="text-xs font-bold uppercase tracking-wider mb-1">0{index + 1}</div>
-                  <div className="text-xs font-semibold truncate">{slide.tag}</div>
-                </button>
-              ))}
+            {/* Trust Bar */}
+            <div className="grid grid-cols-3 gap-4 border-t border-slate-300 pt-6 mt-4">
+              <div>
+                <div className="text-xs text-slate-500 font-extrabold uppercase tracking-wider">Trusted Partner</div>
+                <div className="text-base font-black text-slate-950">100+ Businesses</div>
+              </div>
+              <div>
+                <div className="text-xs text-slate-500 font-extrabold uppercase tracking-wider">Industry Exp</div>
+                <div className="text-base font-black text-slate-950">5+ Years</div>
+              </div>
+              <div>
+                <div className="text-xs text-slate-500 font-extrabold uppercase tracking-wider">Dedicated Support</div>
+                <div className="text-base font-black text-slate-950">24/7 Hours</div>
+              </div>
             </div>
           </div>
 
-          {/* Hero Right Visual (Mockup Compilation Card) */}
-          <div className="lg:col-span-5 relative w-full">
-            <div className="w-full glassmorphism rounded-2xl p-6 relative shadow-2xl border-white/5 overflow-hidden">
-              {/* Card Window Bar */}
-              <div className="flex items-center justify-between border-b border-white/5 pb-4 mb-6">
+          {/* Right Visual Cyber Card */}
+          <div className="lg:col-span-5 relative">
+            <div className="bg-[#070d19] border border-[#00b87c]/40 rounded-3xl p-6 text-white shadow-2xl relative overflow-hidden">
+              <div className="flex items-center justify-between border-b border-slate-800 pb-4 mb-6">
                 <div className="flex gap-1.5">
-                  <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
-                  <div className="w-3 h-3 rounded-full bg-yellow-500/80"></div>
-                  <div className="w-3 h-3 rounded-full bg-green-500/80"></div>
+                  <span className="w-3 h-3 rounded-full bg-rose-500"></span>
+                  <span className="w-3 h-3 rounded-full bg-amber-500"></span>
+                  <span className="w-3 h-3 rounded-full bg-emerald-500"></span>
                 </div>
-                <div className="text-[10px] font-mono text-zinc-500">Core_Processor_v4.ai</div>
-                <div className="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></div>
+                <span className="text-xs font-mono text-slate-300 font-bold">SoftwareSolutions_Core_V4.ai</span>
+                <span className="text-xs bg-[#00b87c]/20 text-[#00f5a0] px-2.5 py-0.5 rounded-full font-mono font-bold">LIVE</span>
               </div>
 
-              {/* Code Metrics */}
-              <div className="space-y-4 font-mono text-xs text-zinc-400">
-                <div className="bg-zinc-950 p-4 rounded-xl border border-white/5 space-y-1">
-                  <div className="text-zinc-600">&gt; npm run start:analytics</div>
-                  <div className="text-green-400">✔ Loaded SLA cloud configurations successfully.</div>
-                  <div className="text-white">Cloud SLA Uptime: <span className="text-accent">99.99%</span></div>
-                  <div className="text-white">API Response Latency: <span className="text-primary">24ms</span></div>
+              <div className="space-y-4 font-mono text-xs text-slate-200">
+                <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-1.5">
+                  <div className="text-slate-400">&gt; compiling backend endpoints...</div>
+                  <div className="text-[#00f5a0] font-bold">✔ Django Class-Based APIs active</div>
+                  <div className="text-white">SLA Uptime: <span className="text-[#00f5a0] font-bold">99.9%</span></div>
+                  <div className="text-white">API Latency: <span className="text-[#00b87c] font-bold">24ms</span></div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-zinc-950 p-4 rounded-xl border border-white/5">
-                    <div className="text-zinc-500 uppercase text-[9px] tracking-wider mb-1">Delivered Products</div>
-                    <div className="text-2xl font-bold text-white">100+</div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <div className="text-xs text-slate-400 uppercase font-bold">Enterprise Apps</div>
+                    <div className="text-xl font-black text-white mt-1">10,000+ Users</div>
                   </div>
-                  <div className="bg-zinc-950 p-4 rounded-xl border border-white/5">
-                    <div className="text-zinc-500 uppercase text-[9px] tracking-wider mb-1">Active Tech Stack</div>
-                    <div className="text-2xl font-bold text-white">20+ Tools</div>
+                  <div className="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <div className="text-xs text-slate-400 uppercase font-bold">Verification</div>
+                    <div className="text-xl font-black text-[#00f5a0] mt-1">Meta Verified</div>
                   </div>
-                </div>
-
-                <div className="bg-zinc-950 p-4 rounded-xl border border-white/5 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-accent animate-pulse"></span>
-                    <span className="text-[10px] text-zinc-300 font-semibold uppercase">WhatsApp Gateway</span>
-                  </div>
-                  <span className="text-[10px] bg-accent/10 text-accent px-2 py-0.5 rounded-full">ACTIVE</span>
                 </div>
               </div>
             </div>
@@ -183,214 +178,296 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 2. PERFORMANCE MARKETING & ROI GROWTH HUB */}
-      <section className="bg-zinc-950/40 border-y border-white/5 py-24 w-full">
+      {/* 2. COMPLETE DIGITAL SOLUTIONS UNDER ONE ROOF (WHITE BACKGROUND SECTION) */}
+      <section className="py-24 bg-white border-b border-slate-200" id="services">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center max-w-3xl mx-auto flex flex-col gap-4 mb-16">
-            <span className="text-xs font-semibold text-primary uppercase tracking-widest">
-              ⚡ ROI-Focused Marketing
+          <div className="text-center max-w-3xl mx-auto flex flex-col gap-3 mb-16">
+            <span className="inline-flex items-center gap-2 justify-center text-xs font-extrabold text-[#008f60] uppercase tracking-widest bg-[#e6f9f3] px-4 py-1.5 rounded-full border border-[#00b87c]/30 self-center">
+              Our Core Engineering
             </span>
-            <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight">
-              Scaling Online Visibility & Customer Leads
+            <h2 className="text-3xl md:text-5xl font-black text-slate-950 tracking-tight">
+              Complete <span className="text-[#00b87c]">Digital Solutions</span> Under One Roof
             </h2>
-            <p className="text-zinc-400 text-sm md:text-base leading-relaxed">
-              We fuse technical search engine optimization, laser-targeted ad campaigns, and detailed user analytics. <span className="text-primary font-semibold">Note: We are not a social media management agency.</span> We build performance funnels designed strictly to convert traffic into sales.
+            <p className="text-slate-700 text-base md:text-lg font-medium leading-relaxed">
+              From custom software engineering to AI automation and mobile apps, we deliver solutions that drive real business growth.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Audits & SEO */}
-            <div className="bg-zinc-900/40 border border-white/5 rounded-2xl p-6 flex flex-col gap-4 glow-card transition-all">
-              <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center text-xl font-bold">
-                🔎
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Card 1: Custom Software */}
+            <div className="bg-white border border-slate-300 rounded-3xl p-8 card-light-hover flex flex-col justify-between">
+              <div className="flex flex-col gap-4">
+                <div className="w-14 h-14 bg-[#e6f9f3] text-[#008f60] rounded-2xl flex items-center justify-center text-2xl font-bold border border-[#00b87c]/30">
+                  ⚙️
+                </div>
+                <h3 className="text-2xl font-black text-slate-950">Custom Software Development</h3>
+                <p className="text-slate-700 text-sm leading-relaxed font-medium">
+                  Tailor-made software architectures, enterprise ERP, CRM, and bespoke billing engines built to automate your operations.
+                </p>
+                <ul className="space-y-2.5 text-xs text-slate-800 font-semibold pt-3 border-t border-slate-200">
+                  <li className="flex items-center gap-2"><span className="text-[#00b87c] font-black text-sm">✔</span> Legacy System Modernization</li>
+                  <li className="flex items-center gap-2"><span className="text-[#00b87c] font-black text-sm">✔</span> Enterprise ERP & CRM Modules</li>
+                  <li className="flex items-center gap-2"><span className="text-[#00b87c] font-black text-sm">✔</span> Custom Billing & Invoicing Systems</li>
+                </ul>
               </div>
-              <h3 className="text-lg font-bold text-white">Search Engine Optimization</h3>
-              <p className="text-xs text-zinc-400 leading-relaxed">
-                Technical core vitals optimization, JSON-LD Schema integration, and intent-focused keywords to secure page-one search ranks.
-              </p>
-              <ul className="text-xs text-zinc-500 space-y-1 mt-2">
-                <li>• Technical Site Speed Audits</li>
-                <li>• Schema & Rich Snippets Setup</li>
-                <li>• Keyword Intent Analytics</li>
-              </ul>
+              <Link href="/services/custom-software-development" className="mt-6 inline-flex text-xs font-extrabold text-[#008f60] hover:text-[#00b87c] hover:underline uppercase tracking-wider">
+                Explore Solution &rarr;
+              </Link>
             </div>
 
-            {/* Performance Ads */}
-            <div className="bg-zinc-900/40 border border-white/5 rounded-2xl p-6 flex flex-col gap-4 glow-card transition-all">
-              <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center text-xl font-bold">
-                🎯
+            {/* Card 2: AI & ML Automation */}
+            <div className="bg-white border border-slate-300 rounded-3xl p-8 card-light-hover flex flex-col justify-between">
+              <div className="flex flex-col gap-4">
+                <div className="w-14 h-14 bg-[#e6f9f3] text-[#008f60] rounded-2xl flex items-center justify-center text-2xl font-bold border border-[#00b87c]/30">
+                  🤖
+                </div>
+                <h3 className="text-2xl font-black text-slate-950">AI Tools & Neural Automation</h3>
+                <p className="text-slate-700 text-sm leading-relaxed font-medium">
+                  Neural automation, RAG support bots, predictive analytics, and customized generative AI tools designed for your data.
+                </p>
+                <ul className="space-y-2.5 text-xs text-slate-800 font-semibold pt-3 border-t border-slate-200">
+                  <li className="flex items-center gap-2"><span className="text-[#00b87c] font-black text-sm">✔</span> Private Generative AI & LLMs</li>
+                  <li className="flex items-center gap-2"><span className="text-[#00b87c] font-black text-sm">✔</span> RAG Customer Support Chatbots</li>
+                  <li className="flex items-center gap-2"><span className="text-[#00b87c] font-black text-sm">✔</span> Document Data OCR Extraction</li>
+                </ul>
               </div>
-              <h3 className="text-lg font-bold text-white">Performance Ads</h3>
-              <p className="text-xs text-zinc-400 leading-relaxed">
-                Laser-targeted Google Search ads and Meta retargeting campaigns optimized to secure maximum customer acquisition.
-              </p>
-              <ul className="text-xs text-zinc-500 space-y-1 mt-2">
-                <li>• High-Intent Search Ads</li>
-                <li>• Meta Retargeting funnels</li>
-                <li>• Bid Optimization strategy</li>
-              </ul>
+              <Link href="/services/ai-ml-automation" className="mt-6 inline-flex text-xs font-extrabold text-[#008f60] hover:text-[#00b87c] hover:underline uppercase tracking-wider">
+                Explore Solution &rarr;
+              </Link>
             </div>
 
-            {/* Analytics & GA4 */}
-            <div className="bg-zinc-900/40 border border-white/5 rounded-2xl p-6 flex flex-col gap-4 glow-card transition-all">
-              <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center text-xl font-bold">
-                📈
+            {/* Card 3: Mobile Apps */}
+            <div className="bg-white border border-slate-300 rounded-3xl p-8 card-light-hover flex flex-col justify-between">
+              <div className="flex flex-col gap-4">
+                <div className="w-14 h-14 bg-[#e6f9f3] text-[#008f60] rounded-2xl flex items-center justify-center text-2xl font-bold border border-[#00b87c]/30">
+                  📱
+                </div>
+                <h3 className="text-2xl font-black text-slate-950">Mobile App Development</h3>
+                <p className="text-slate-700 text-sm leading-relaxed font-medium">
+                  Premium cross-platform and native iOS & Android applications featuring offline synchronization, animations, and geofencing.
+                </p>
+                <ul className="space-y-2.5 text-xs text-slate-800 font-semibold pt-3 border-t border-slate-200">
+                  <li className="flex items-center gap-2"><span className="text-[#00b87c] font-black text-sm">✔</span> Flutter & React Native Cross-Platform</li>
+                  <li className="flex items-center gap-2"><span className="text-[#00b87c] font-black text-sm">✔</span> Native Swift (iOS) & Kotlin (Android)</li>
+                  <li className="flex items-center gap-2"><span className="text-[#00b87c] font-black text-sm">✔</span> Offline-First Synchronization</li>
+                </ul>
               </div>
-              <h3 className="text-lg font-bold text-white">Analytics & Conversion</h3>
-              <p className="text-xs text-zinc-400 leading-relaxed">
-                Setup detailed Google Analytics 4 tracks, scroll heatmaps, and funnel dropoff charts to convert viewers into clients.
-              </p>
-              <ul className="text-xs text-zinc-500 space-y-1 mt-2">
-                <li>• GA4 Custom Event Setup</li>
-                <li>• Heatmaps & User Session logs</li>
-                <li>• Landing page A/B splits</li>
-              </ul>
+              <Link href="/services/mobile-app-development" className="mt-6 inline-flex text-xs font-extrabold text-[#008f60] hover:text-[#00b87c] hover:underline uppercase tracking-wider">
+                Explore Solution &rarr;
+              </Link>
             </div>
 
-            {/* Messaging channels */}
-            <div className="bg-zinc-900/40 border border-white/5 rounded-2xl p-6 flex flex-col gap-4 glow-card transition-all">
-              <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center text-xl font-bold">
-                💬
+            {/* Card 4: Performance Marketing */}
+            <div className="bg-white border border-slate-300 rounded-3xl p-8 card-light-hover flex flex-col justify-between">
+              <div className="flex flex-col gap-4">
+                <div className="w-14 h-14 bg-[#e6f9f3] text-[#008f60] rounded-2xl flex items-center justify-center text-2xl font-bold border border-[#00b87c]/30">
+                  🎯
+                </div>
+                <h3 className="text-2xl font-black text-slate-950">Performance Marketing</h3>
+                <p className="text-slate-700 text-sm leading-relaxed font-medium">
+                  Note: NOT a simple social media posting company. We specialize strictly in performance PPC ad campaigns, search engine dominance, and ROAS.
+                </p>
+                <ul className="space-y-2.5 text-xs text-slate-800 font-semibold pt-3 border-t border-slate-200">
+                  <li className="flex items-center gap-2"><span className="text-[#00b87c] font-black text-sm">✔</span> High-Intent Google Search PPC Ads</li>
+                  <li className="flex items-center gap-2"><span className="text-[#00b87c] font-black text-sm">✔</span> Meta Retargeting Sales Funnels</li>
+                  <li className="flex items-center gap-2"><span className="text-[#00b87c] font-black text-sm">✔</span> Core Web Vitals 99+ Speed Tuning</li>
+                </ul>
               </div>
-              <h3 className="text-lg font-bold text-white">WhatsApp & RCS Engines</h3>
-              <p className="text-xs text-zinc-400 leading-relaxed">
-                Verified API setups sending rich interactive carousels and reply buttons directly to customers with up to 98% open rates.
-              </p>
-              <ul className="text-xs text-zinc-500 space-y-1 mt-2">
-                <li>• Official API Verifications</li>
-                <li>• Rich Carousel broadcasts</li>
-                <li>• Quick Action Reply Buttons</li>
-              </ul>
+              <Link href="/services/performance-marketing-analytics" className="mt-6 inline-flex text-xs font-extrabold text-[#008f60] hover:text-[#00b87c] hover:underline uppercase tracking-wider">
+                Explore Solution &rarr;
+              </Link>
+            </div>
+
+            {/* Card 5: WhatsApp Business API */}
+            <div className="bg-white border border-slate-300 rounded-3xl p-8 card-light-hover flex flex-col justify-between">
+              <div className="flex flex-col gap-4">
+                <div className="w-14 h-14 bg-[#e6f9f3] text-[#008f60] rounded-2xl flex items-center justify-center text-2xl font-bold border border-[#00b87c]/30">
+                  💬
+                </div>
+                <h3 className="text-2xl font-black text-slate-950">WhatsApp API Marketing</h3>
+                <p className="text-slate-700 text-sm leading-relaxed font-medium">
+                  Official Meta verified WhatsApp Business API integration. Send automated transaction alerts, shipping links, and marketing broadcasts.
+                </p>
+                <ul className="space-y-2.5 text-xs text-slate-800 font-semibold pt-3 border-t border-slate-200">
+                  <li className="flex items-center gap-2"><span className="text-[#00b87c] font-black text-sm">✔</span> Official Meta Green Badge Verification</li>
+                  <li className="flex items-center gap-2"><span className="text-[#00b87c] font-black text-sm">✔</span> Automated Transaction & Invoice Alerts</li>
+                  <li className="flex items-center gap-2"><span className="text-[#00b87c] font-black text-sm">✔</span> Interactive Flow Chatbot Buttons</li>
+                </ul>
+              </div>
+              <Link href="/services/whatsapp-business-api-marketing" className="mt-6 inline-flex text-xs font-extrabold text-[#008f60] hover:text-[#00b87c] hover:underline uppercase tracking-wider">
+                Explore Solution &rarr;
+              </Link>
+            </div>
+
+            {/* Card 6: RCS Messaging */}
+            <div className="bg-white border border-slate-300 rounded-3xl p-8 card-light-hover flex flex-col justify-between">
+              <div className="flex flex-col gap-4">
+                <div className="w-14 h-14 bg-[#e6f9f3] text-[#008f60] rounded-2xl flex items-center justify-center text-2xl font-bold border border-[#00b87c]/30">
+                  ✉️
+                </div>
+                <h3 className="text-2xl font-black text-slate-950">RCS Messaging & Automation</h3>
+                <p className="text-slate-700 text-sm leading-relaxed font-medium">
+                  Upgrade SMS to rich interactive conversations with product carousels, action buttons, and verified sender logos.
+                </p>
+                <ul className="space-y-2.5 text-xs text-slate-800 font-semibold pt-3 border-t border-slate-200">
+                  <li className="flex items-center gap-2"><span className="text-[#00b87c] font-black text-sm">✔</span> Verified Sender Inbox Profiles</li>
+                  <li className="flex items-center gap-2"><span className="text-[#00b87c] font-black text-sm">✔</span> Rich Product Image Carousels</li>
+                  <li className="flex items-center gap-2"><span className="text-[#00b87c] font-black text-sm">✔</span> Real-Time Delivery & Read Receipts</li>
+                </ul>
+              </div>
+              <Link href="/services/rcs-messaging-automation" className="mt-6 inline-flex text-xs font-extrabold text-[#008f60] hover:text-[#00b87c] hover:underline uppercase tracking-wider">
+                Explore Solution &rarr;
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 3. ZIG-ZAG DEVELOPMENT ROADMAP */}
-      <section className="max-w-7xl mx-auto px-6 w-full">
-        <div className="text-center max-w-3xl mx-auto flex flex-col gap-4 mb-16">
-          <span className="text-xs font-semibold text-primary uppercase tracking-widest">
-            ⚡ Structured Engineering
-          </span>
-          <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight">
-            Our Agile Engineering Timeline
-          </h2>
-          <p className="text-zinc-400 text-sm md:text-base leading-relaxed">
-            We follow a milestone-based zig-zag methodology to take your software solution from initial code blueprints to secure production release.
-          </p>
-        </div>
+      {/* 3. ENGINEERING DEVELOPMENT ROADMAP (DARK CYBER NAVY WITH STARS BACKGROUND) */}
+      <section className="py-24 bg-[#070d19] text-white relative overflow-hidden" id="roadmap">
+        {/* Interactive Stars Background Canvas */}
+        <StarsBackground />
 
-        <div className="relative border-l border-zinc-800 ml-4 md:ml-0 md:grid md:grid-cols-9 md:gap-4 md:border-none space-y-12 md:space-y-0">
-          {/* Line for desktop */}
-          <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-zinc-800 -translate-x-1/2"></div>
-
-          {/* Node 1: Left */}
-          <div className="md:contents">
-            <div className="relative pl-8 md:pl-0 md:col-span-4 bg-zinc-950/20 border border-white/5 p-6 rounded-2xl hover:border-primary/20 transition-all">
-              <span className="absolute -left-3.5 md:left-auto md:right-0 md:translate-x-1/2 w-7 h-7 rounded-full bg-primary border-4 border-background z-10 flex items-center justify-center text-[10px] font-bold text-white font-mono">
-                01
-              </span>
-              <div className="text-xs font-bold text-primary mb-1">DAYS 1 - 3</div>
-              <h4 className="text-base font-bold text-white mb-2">Requirement Scope & Architecture</h4>
-              <p className="text-xs text-zinc-400 leading-relaxed">
-                System blueprints, PostgreSQL database schema designs, REST API mappings, and milestone timelines.
-              </p>
-            </div>
-            <div className="hidden md:block md:col-span-1"></div>
-            <div className="hidden md:block md:col-span-4"></div>
-          </div>
-
-          {/* Node 2: Right */}
-          <div className="md:contents">
-            <div className="hidden md:block md:col-span-4"></div>
-            <div className="hidden md:block md:col-span-1"></div>
-            <div className="relative pl-8 md:pl-0 md:col-span-4 bg-zinc-950/20 border border-white/5 p-6 rounded-2xl hover:border-primary/20 transition-all">
-              <span className="absolute -left-3.5 md:left-0 md:-translate-x-1/2 w-7 h-7 rounded-full bg-zinc-800 border-4 border-background z-10 flex items-center justify-center text-[10px] font-bold text-white font-mono">
-                02
-              </span>
-              <div className="text-xs font-bold text-primary mb-1">DAYS 4 - 8</div>
-              <h4 className="text-base font-bold text-white mb-2">UI/UX Component Design</h4>
-              <p className="text-xs text-zinc-400 leading-relaxed">
-                Designing interactive wireframes, component design systems, and responsive user flows in Figma.
-              </p>
-            </div>
-          </div>
-
-          {/* Node 3: Left */}
-          <div className="md:contents">
-            <div className="relative pl-8 md:pl-0 md:col-span-4 bg-zinc-950/20 border border-white/5 p-6 rounded-2xl hover:border-primary/20 transition-all">
-              <span className="absolute -left-3.5 md:left-auto md:right-0 md:translate-x-1/2 w-7 h-7 rounded-full bg-zinc-800 border-4 border-background z-10 flex items-center justify-center text-[10px] font-bold text-white font-mono">
-                03
-              </span>
-              <div className="text-xs font-bold text-primary mb-1">DAYS 9 - 22</div>
-              <h4 className="text-base font-bold text-white mb-2">Code Sprints & Backend Integration</h4>
-              <p className="text-xs text-zinc-400 leading-relaxed">
-                Django Class-Based view setups, frontend Next.js routing assemblies, and external API mappings.
-              </p>
-            </div>
-            <div className="hidden md:block md:col-span-1"></div>
-            <div className="hidden md:block md:col-span-4"></div>
-          </div>
-
-          {/* Node 4: Right */}
-          <div className="md:contents">
-            <div className="hidden md:block md:col-span-4"></div>
-            <div className="hidden md:block md:col-span-1"></div>
-            <div className="relative pl-8 md:pl-0 md:col-span-4 bg-zinc-950/20 border border-white/5 p-6 rounded-2xl hover:border-primary/20 transition-all">
-              <span className="absolute -left-3.5 md:left-0 md:-translate-x-1/2 w-7 h-7 rounded-full bg-zinc-800 border-4 border-background z-10 flex items-center justify-center text-[10px] font-bold text-white font-mono">
-                04
-              </span>
-              <div className="text-xs font-bold text-primary mb-1">DAYS 23 - 26</div>
-              <h4 className="text-base font-bold text-white mb-2">Speed Tuning & QA Audits</h4>
-              <p className="text-xs text-zinc-400 leading-relaxed">
-                Accessibility checks, security penetrations, cross-browser compatibility, and speed optimization audits.
-              </p>
-            </div>
-          </div>
-
-          {/* Node 5: Left */}
-          <div className="md:contents">
-            <div className="relative pl-8 md:pl-0 md:col-span-4 bg-zinc-950/20 border border-white/5 p-6 rounded-2xl hover:border-primary/20 transition-all">
-              <span className="absolute -left-3.5 md:left-auto md:right-0 md:translate-x-1/2 w-7 h-7 rounded-full bg-zinc-800 border-4 border-background z-10 flex items-center justify-center text-[10px] font-bold text-white font-mono">
-                05
-              </span>
-              <div className="text-xs font-bold text-primary mb-1">ONGOING</div>
-              <h4 className="text-base font-bold text-white mb-2">Cloud Release & 24/7 Support</h4>
-              <p className="text-xs text-zinc-400 leading-relaxed">
-                Zero-downtime server migrations with scheduled backups, health audits, and 24/7 SLA maintenance.
-              </p>
-            </div>
-            <div className="hidden md:block md:col-span-1"></div>
-            <div className="hidden md:block md:col-span-4"></div>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. IRIS SOFTWARE-STYLE TABBED TECH STACK SHOWCASE */}
-      <section className="bg-zinc-950/40 border-y border-white/5 py-24 w-full" id="technologies">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center max-w-3xl mx-auto flex flex-col gap-4 mb-16">
-            <span className="text-xs font-semibold text-primary uppercase tracking-widest">
-              ⚡ Tools & Technologies
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="text-center max-w-3xl mx-auto flex flex-col gap-3 mb-16">
+            <span className="inline-flex items-center gap-2 justify-center text-xs font-extrabold text-[#00f5a0] uppercase tracking-widest bg-[#00b87c]/20 px-4 py-1.5 rounded-full border border-[#00b87c]/40 self-center">
+              ⚡ Interactive Cyber Universe Journey
             </span>
             <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight">
-              Our Modern Technology Stack
+              Our Engineering <span className="text-[#00b87c]">Development Roadmap</span>
             </h2>
-            <p className="text-zinc-400 text-sm md:text-base leading-relaxed">
+            <p className="text-slate-200 text-base md:text-lg font-medium leading-relaxed">
+              Experience our alternating Zig-Zag methodology through the particle cyber universe.
+            </p>
+          </div>
+
+          <div className="relative border-l-2 border-[#00b87c]/40 ml-4 md:ml-0 md:grid md:grid-cols-9 md:gap-4 md:border-none space-y-12 md:space-y-0">
+            {/* Desktop Center Vertical Line */}
+            <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[#00b87c] via-[#00f5a0] to-[#00b87c] -translate-x-1/2"></div>
+
+            {/* STEP 01 (LEFT) */}
+            <div className="md:contents">
+              <div className="relative pl-8 md:pl-0 md:col-span-4 zigzag-card-dark p-6 rounded-2xl">
+                <span className="absolute -left-4 md:left-auto md:right-0 md:translate-x-1/2 w-8 h-8 rounded-full bg-[#00b87c] border-4 border-[#070d19] z-10 flex items-center justify-center text-xs font-black text-white font-mono shadow-lg shadow-[#00b87c]/50">
+                  01
+                </span>
+                <span className="inline-block bg-[#00b87c]/20 text-[#00f5a0] text-xs font-extrabold uppercase tracking-wider px-3 py-0.5 rounded-full mb-2">DAYS 1 - 3</span>
+                <h3 className="text-xl font-black text-white mb-2">AI Discovery & Requirement Scope</h3>
+                <p className="text-xs text-slate-200 leading-relaxed font-medium mb-3">
+                  Deep technical analysis, architecture mapping, SRS documentation, and milestone planning with client team.
+                </p>
+                <div className="text-xs text-[#00f5a0] font-mono font-bold flex items-center gap-1">
+                  💻 System Blueprint Completed
+                </div>
+              </div>
+              <div className="hidden md:block md:col-span-1"></div>
+              <div className="hidden md:block md:col-span-4"></div>
+            </div>
+
+            {/* STEP 02 (RIGHT) */}
+            <div className="md:contents">
+              <div className="hidden md:block md:col-span-4"></div>
+              <div className="hidden md:block md:col-span-1"></div>
+              <div className="relative pl-8 md:pl-0 md:col-span-4 zigzag-card-dark p-6 rounded-2xl">
+                <span className="absolute -left-4 md:left-0 md:-translate-x-1/2 w-8 h-8 rounded-full bg-[#00b87c] border-4 border-[#070d19] z-10 flex items-center justify-center text-xs font-black text-white font-mono shadow-lg shadow-[#00b87c]/50">
+                  02
+                </span>
+                <span className="inline-block bg-[#00b87c]/20 text-[#00f5a0] text-xs font-extrabold uppercase tracking-wider px-3 py-0.5 rounded-full mb-2">DAYS 4 - 10</span>
+                <h3 className="text-xl font-black text-white mb-2">UI/UX Prototyping & Design</h3>
+                <p className="text-xs text-slate-200 leading-relaxed font-medium mb-3">
+                  Interactive wireframing, component design systems, and responsive user journey prototypes in Figma.
+                </p>
+                <div className="text-xs text-[#00f5a0] font-mono font-bold flex items-center gap-1">
+                  🎨 Figma Prototype Approved
+                </div>
+              </div>
+            </div>
+
+            {/* STEP 03 (LEFT) */}
+            <div className="md:contents">
+              <div className="relative pl-8 md:pl-0 md:col-span-4 zigzag-card-dark p-6 rounded-2xl">
+                <span className="absolute -left-4 md:left-auto md:right-0 md:translate-x-1/2 w-8 h-8 rounded-full bg-[#00b87c] border-4 border-[#070d19] z-10 flex items-center justify-center text-xs font-black text-white font-mono shadow-lg shadow-[#00b87c]/50">
+                  03
+                </span>
+                <span className="inline-block bg-[#00b87c]/20 text-[#00f5a0] text-xs font-extrabold uppercase tracking-wider px-3 py-0.5 rounded-full mb-2">DAYS 11 - 25</span>
+                <h3 className="text-xl font-black text-white mb-2">Agile Code Sprint & Cloud Setup</h3>
+                <p className="text-xs text-slate-200 leading-relaxed font-medium mb-3">
+                  Modular backend API construction, Next.js frontend component assembly, database optimization, and CI/CD pipelines.
+                </p>
+                <div className="text-xs text-[#00f5a0] font-mono font-bold flex items-center gap-1">
+                  ⚡ Agile Production Sprints
+                </div>
+              </div>
+              <div className="hidden md:block md:col-span-1"></div>
+              <div className="hidden md:block md:col-span-4"></div>
+            </div>
+
+            {/* STEP 04 (RIGHT) */}
+            <div className="md:contents">
+              <div className="hidden md:block md:col-span-4"></div>
+              <div className="hidden md:block md:col-span-1"></div>
+              <div className="relative pl-8 md:pl-0 md:col-span-4 zigzag-card-dark p-6 rounded-2xl">
+                <span className="absolute -left-4 md:left-0 md:-translate-x-1/2 w-8 h-8 rounded-full bg-[#00b87c] border-4 border-[#070d19] z-10 flex items-center justify-center text-xs font-black text-white font-mono shadow-lg shadow-[#00b87c]/50">
+                  04
+                </span>
+                <span className="inline-block bg-[#00b87c]/20 text-[#00f5a0] text-xs font-extrabold uppercase tracking-wider px-3 py-0.5 rounded-full mb-2">DAYS 26 - 30</span>
+                <h3 className="text-xl font-black text-white mb-2">QA Audit & Penetration Testing</h3>
+                <p className="text-xs text-slate-200 leading-relaxed font-medium mb-3">
+                  Comprehensive vulnerability testing, load balancing checks, cross-device responsiveness, and speed tuning.
+                </p>
+                <div className="text-xs text-[#00f5a0] font-mono font-bold flex items-center gap-1">
+                  🛡️ Security Audit Passed
+                </div>
+              </div>
+            </div>
+
+            {/* STEP 05 (LEFT) */}
+            <div className="md:contents">
+              <div className="relative pl-8 md:pl-0 md:col-span-4 zigzag-card-dark p-6 rounded-2xl">
+                <span className="absolute -left-4 md:left-auto md:right-0 md:translate-x-1/2 w-8 h-8 rounded-full bg-[#00b87c] border-4 border-[#070d19] z-10 flex items-center justify-center text-xs font-black text-white font-mono shadow-lg shadow-[#00b87c]/50">
+                  05
+                </span>
+                <span className="inline-block bg-[#00b87c]/20 text-[#00f5a0] text-xs font-extrabold uppercase tracking-wider px-3 py-0.5 rounded-full mb-2">ONGOING SLA</span>
+                <h3 className="text-xl font-black text-white mb-2">Deployment & 24/7 Support</h3>
+                <p className="text-xs text-slate-200 leading-relaxed font-medium mb-3">
+                  Zero-downtime server release with continuous monitoring, automated backups, and 24/7 SLA maintenance.
+                </p>
+                <div className="text-xs text-[#00f5a0] font-mono font-bold flex items-center gap-1">
+                  📞 Live System Monitoring
+                </div>
+              </div>
+              <div className="hidden md:block md:col-span-1"></div>
+              <div className="hidden md:block md:col-span-4"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. TECHNOLOGIES WE WORK WITH */}
+      <section className="py-24 bg-slate-100 border-b border-slate-300" id="technologies">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center max-w-3xl mx-auto flex flex-col gap-3 mb-16">
+            <span className="inline-flex items-center gap-2 justify-center text-xs font-extrabold text-[#008f60] uppercase tracking-widest bg-[#e6f9f3] px-4 py-1.5 rounded-full border border-[#00b87c]/30 self-center">
+              Technologies We Work With
+            </span>
+            <h2 className="text-3xl md:text-5xl font-black text-slate-950 tracking-tight">
+              Our Modern <span className="text-[#00b87c]">Technology Stack</span>
+            </h2>
+            <p className="text-slate-700 text-base md:text-lg font-medium leading-relaxed">
               We leverage production-proven tools and scalable languages to ensure fast response parameters and clean application state.
             </p>
           </div>
 
-          {/* Tab buttons */}
-          <div className="flex flex-wrap justify-center gap-3 mb-12">
+          {/* Tab Categories */}
+          <div className="flex flex-wrap justify-center gap-2.5 mb-12">
             {Object.keys(techStack).map((cat) => (
               <button
                 key={cat}
                 onClick={() => setActiveTab(cat)}
-                className={`px-6 py-2.5 rounded-full font-semibold text-sm transition-all cursor-pointer ${
+                className={`px-6 py-2.5 rounded-full font-extrabold text-xs uppercase tracking-wider transition-all cursor-pointer ${
                   activeTab === cat
-                    ? "bg-primary text-white shadow-lg shadow-primary/20"
-                    : "bg-zinc-900 border border-white/5 text-zinc-400 hover:text-white"
+                    ? "bg-[#00b87c] text-white shadow-md shadow-[#00b87c]/30"
+                    : "bg-white border border-slate-300 text-slate-900 hover:border-[#00b87c]"
                 }`}
               >
                 {cat}
@@ -398,16 +475,16 @@ export default function Home() {
             ))}
           </div>
 
-          {/* Tab content Grid */}
+          {/* Tab Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in">
             {techStack[activeTab].map((tech) => (
               <div
                 key={tech.name}
-                className="bg-zinc-900/60 border border-white/5 rounded-2xl p-6 flex flex-col gap-3 hover:border-primary/20 transition-colors"
+                className="bg-white border border-slate-300 rounded-2xl p-6 flex flex-col gap-3 card-light-hover"
               >
-                <div className="font-mono text-zinc-500 text-xs">Category: {activeTab}</div>
-                <h4 className="text-lg font-bold text-white">{tech.name}</h4>
-                <p className="text-xs text-zinc-400 leading-relaxed">{tech.desc}</p>
+                <span className="text-xs font-mono text-[#008f60] uppercase font-bold">{tech.category}</span>
+                <h4 className="text-xl font-black text-slate-950">{tech.name}</h4>
+                <p className="text-xs text-slate-700 font-medium leading-relaxed">{tech.desc}</p>
               </div>
             ))}
           </div>
@@ -415,20 +492,16 @@ export default function Home() {
       </section>
 
       {/* 5. CALL TO ACTION BANNER */}
-      <section className="max-w-7xl mx-auto px-6 w-full mb-12">
-        <div className="w-full bg-gradient-to-br from-zinc-900 to-zinc-950 border border-white/10 rounded-3xl p-8 md:p-16 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden shadow-2xl">
-          {/* Subtle Background Glows */}
-          <div className="absolute -top-24 -left-24 w-48 h-48 bg-primary/10 rounded-full blur-3xl"></div>
-          <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-rose-500/10 rounded-full blur-3xl"></div>
-
-          <div className="flex flex-col gap-4 relative z-10 max-w-2xl">
-            <span className="text-xs font-semibold text-primary uppercase tracking-widest">
+      <section className="max-w-7xl mx-auto px-6 w-full py-16">
+        <div className="w-full bg-gradient-to-r from-[#070d19] via-[#0b172a] to-[#070d19] border border-[#00b87c]/40 rounded-3xl p-8 md:p-16 flex flex-col md:flex-row items-center justify-between gap-8 text-white shadow-2xl relative overflow-hidden">
+          <div className="flex flex-col gap-3 max-w-2xl relative z-10">
+            <span className="text-xs font-extrabold text-[#00f5a0] uppercase tracking-widest">
               Ready to automate?
             </span>
-            <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight leading-tight">
+            <h2 className="text-3xl md:text-5xl font-black tracking-tight leading-tight">
               Let&apos;s build your software blueprint today
             </h2>
-            <p className="text-zinc-400 text-sm md:text-base leading-relaxed">
+            <p className="text-slate-200 text-sm md:text-base font-medium leading-relaxed">
               Schedule a technical consulting call with our solutions architects or book a live product demo to review our customized portals.
             </p>
           </div>
@@ -436,13 +509,13 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-4 relative z-10 w-full sm:w-auto">
             <button
               onClick={() => handleOpenModal("demo")}
-              className="px-8 py-3.5 bg-primary hover:bg-primary-hover text-white rounded-full font-bold transition-all text-center cursor-pointer shadow-lg shadow-primary/20 text-sm"
+              className="px-8 py-3.5 bg-[#00b87c] hover:bg-[#008f60] text-white rounded-full font-extrabold transition-all text-center cursor-pointer shadow-lg shadow-[#00b87c]/30 text-sm tracking-wide"
             >
-              Book a Demo
+              Get A Free Quote
             </button>
             <button
               onClick={() => handleOpenModal("call")}
-              className="px-8 py-3.5 bg-zinc-800 hover:bg-zinc-700 text-white rounded-full font-bold transition-all text-center cursor-pointer text-sm"
+              className="px-8 py-3.5 bg-white/10 hover:bg-white/20 border border-white/30 text-white rounded-full font-extrabold transition-all text-center cursor-pointer text-sm tracking-wide"
             >
               Schedule a Call
             </button>

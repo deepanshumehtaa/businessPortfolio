@@ -8,65 +8,65 @@ export default function ServicesPage() {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
-  const [selectedService, setSelectedService] = useState("");
+  const [selectedService, setSelectedService] = useState(null);
 
   const staticServices = [
     {
       id: 1,
       title: "Custom Software Development",
       slug: "custom-software-development",
-      summary: "Tailor-made software architectures, enterprise ERP, CRM, and bespoke billing engines built to automate your operations.",
-      icon: "cpu",
       category: "Software Engineering",
+      summary: "Tailor-made software architectures, enterprise ERP, CRM, and bespoke billing engines built to automate your operations.",
+      features: ["Legacy Modernization", "Bespoke ERP/CRM", "Multi-tenant SaaS", "Custom Billing Engines"],
     },
     {
       id: 2,
       title: "AI & Machine Learning Automation",
       slug: "ai-ml-automation",
-      summary: "Neural automation, intelligent chatbots, predictive analytics, and customized generative AI tools designed to optimize business logic.",
-      icon: "robot",
       category: "AI & Automation",
+      summary: "Neural automation, intelligent chatbots, predictive analytics, and customized generative AI tools designed to optimize business logic.",
+      features: ["Generative AI & LLMs", "Predictive Analytics", "RAG Support Agents", "Computer Vision & OCR"],
     },
     {
       id: 3,
       title: "SaaS Platform Engineering",
       slug: "saas-platform-engineering",
-      summary: "Scalable, secure, and multi-tenant SaaS cloud platforms featuring subscriptions, metered usage, and high-speed API backends.",
-      icon: "cloud-arrow-up",
       category: "Software Engineering",
+      summary: "Scalable, secure, and multi-tenant SaaS cloud platforms featuring subscriptions, metered usage, and high-speed API backends.",
+      features: ["Multi-tenant Databases", "Stripe Metered Billing", "FastAPI/DRF Backends", "OAuth & SSO integration"],
     },
     {
       id: 4,
       title: "Mobile App Development",
       slug: "mobile-app-development",
-      summary: "Premium cross-platform and native iOS & Android applications featuring offline synchronization, animations, and geofencing.",
-      icon: "phone-vibrate",
       category: "Mobile Apps",
+      summary: "Premium cross-platform and native iOS & Android applications featuring offline synchronization, animations, and geofencing.",
+      features: ["React Native & Flutter", "Native Swift & Kotlin", "Offline Synchronization", "Push Alerts & Geofencing"],
     },
     {
       id: 5,
       title: "Performance Marketing & Analytics",
       slug: "performance-marketing-analytics",
-      summary: "ROI-focused Google Ads, Meta Ads, and custom analytics setups engineered to maximize acquisition without wasting budget.",
-      icon: "graph-up-arrow",
       category: "Marketing Solutions",
+      summary: "ROI-focused Google Ads, Meta Ads, and custom analytics setups engineered to maximize acquisition without wasting budget.",
+      features: ["Google Search PPC Ads", "Meta Remarketing Funnels", "GA4 Event Architectures", "Landing Page A/B Testing"],
     },
     {
       id: 6,
       title: "WhatsApp Business API Marketing",
       slug: "whatsapp-business-api-marketing",
-      summary: "Verified business API templates, interactive automated chat buttons, and automated marketing broadcast managers.",
-      icon: "whatsapp",
       category: "Marketing Solutions",
+      summary: "Verified business API templates, interactive automated chat buttons, and automated marketing broadcast managers.",
+      features: ["Meta API Verification", "Automated Alerts", "Flow Interactive Bots", "Broadcast Campaign Panels"],
     },
     {
       id: 7,
       title: "RCS Messaging & Automation",
       slug: "rcs-messaging-automation",
-      summary: "Rich Communication Services to send interactive SMS with logos, image carousels, and quick reply actions directly to native dialers.",
-      icon: "chat-left-text",
       category: "Marketing Solutions",
-    }
+      summary: "Rich Communication Services to send interactive SMS with logos, image carousels, and quick reply actions directly to native dialers.",
+      features: ["Branded Inboxes", "Rich Product Carousels", "Quick-Reply Actions", "Read Receipt Analytics"],
+    },
   ];
 
   useEffect(() => {
@@ -88,58 +88,78 @@ export default function ServicesPage() {
     fetchServices();
   }, []);
 
-  const openBooking = (svcTitle) => {
-    setSelectedService(svcTitle);
+  const handleOpenDemoModal = (service) => {
+    setSelectedService(service);
     setModalOpen(true);
   };
 
   return (
     <div className="max-w-7xl mx-auto px-6 w-full flex flex-col gap-12 py-6">
-      <div className="flex flex-col gap-4 max-w-2xl">
-        <span className="text-xs font-semibold text-primary uppercase tracking-widest">
-          ⚡ Our Core Solutions
+      {/* Page Header */}
+      <div className="flex flex-col gap-4 max-w-3xl">
+        <span className="inline-flex items-center gap-2 self-start text-xs font-extrabold text-[#008f60] uppercase tracking-widest bg-[#e6f9f3] px-4 py-1.5 rounded-full border border-[#00b87c]/30">
+          ⚡ Software Engineering Directory
         </span>
-        <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight">
-          Complete Software Solutions under one roof
+        <h1 className="text-4xl md:text-5xl font-black text-slate-950 tracking-tight leading-tight">
+          Enterprise <span className="text-[#00b87c]">Software Solutions</span> & Growth Services
         </h1>
-        <p className="text-zinc-400 text-sm md:text-base leading-relaxed">
-          From fullstack application development and Generative AI training to automated marketing alerts and conversion funnel setups, we deliver technical systems built to grow sales.
+        <p className="text-slate-700 text-base md:text-lg font-medium leading-relaxed">
+          Explore our suite of tailor-made software solutions, multi-tenant cloud platforms, AI automation systems, and high-conversion acquisition channels built for modern businesses.
         </p>
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-pulse">
           {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="h-64 bg-zinc-900 border border-white/5 rounded-2xl"></div>
+            <div key={i} className="h-64 bg-slate-200 border border-slate-300 rounded-3xl"></div>
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {services.map((svc) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {services.map((service) => (
             <div
-              key={svc.slug}
-              className="bg-zinc-900/40 border border-white/5 rounded-2xl p-6 flex flex-col justify-between glow-card transition-all"
+              key={service.slug}
+              className="bg-white border border-slate-300 rounded-3xl p-8 card-light-hover flex flex-col justify-between"
             >
               <div className="flex flex-col gap-4">
-                <div className="inline-flex items-center self-start bg-primary/10 border border-primary/20 rounded-full px-3 py-1 text-[10px] text-primary font-medium">
-                  {svc.category}
-                </div>
-                <h2 className="text-xl font-bold text-white tracking-tight">{svc.title}</h2>
-                <p className="text-zinc-400 text-xs md:text-sm leading-relaxed mb-4">
-                  {svc.summary}
+                <span className="inline-flex self-start bg-[#e6f9f3] text-[#008f60] px-3 py-1 rounded-full text-xs font-extrabold uppercase font-mono tracking-wider border border-[#00b87c]/30">
+                  {service.category}
+                </span>
+
+                <h2 className="text-2xl font-black text-slate-950 tracking-tight">
+                  {service.title}
+                </h2>
+
+                <p className="text-slate-700 text-sm font-medium leading-relaxed">
+                  {service.summary}
                 </p>
+
+                {/* Features Tags */}
+                <div className="flex flex-wrap gap-2 pt-3 border-t border-slate-200">
+                  {service.features &&
+                    service.features.map((feat, idx) => (
+                      <span
+                        key={idx}
+                        className="text-[11px] font-bold bg-slate-100 text-slate-800 px-2.5 py-1 rounded-md border border-slate-300"
+                      >
+                        ✓ {feat}
+                      </span>
+                    ))}
+                </div>
               </div>
 
-              <div className="flex items-center justify-between border-t border-white/5 pt-4 mt-2">
+              {/* Action Hooks */}
+              <div className="flex items-center justify-between border-t border-slate-200 pt-6 mt-6">
                 <Link
-                  href={`/services/${svc.slug}`}
-                  className="text-xs font-bold text-zinc-300 hover:text-white transition-colors"
+                  href={`/services/${service.slug}`}
+                  className="text-xs font-extrabold text-[#008f60] hover:text-[#00b87c] hover:underline uppercase tracking-wider"
                 >
                   View Details &rarr;
                 </Link>
+
                 <button
-                  onClick={() => openBooking(svc.title)}
-                  className="text-xs font-bold bg-primary hover:bg-primary-hover text-white px-4 py-2 rounded-full transition-colors cursor-pointer"
+                  onClick={() => handleOpenDemoModal(service)}
+                  className="px-4 py-2 bg-[#00b87c] hover:bg-[#008f60] text-white rounded-full text-xs font-extrabold transition-all shadow-md shadow-[#00b87c]/20 cursor-pointer"
                 >
                   Book Demo
                 </button>
@@ -154,7 +174,7 @@ export default function ServicesPage() {
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
         initialType="demo"
-        services={services}
+        services={selectedService ? [selectedService] : services}
       />
     </div>
   );

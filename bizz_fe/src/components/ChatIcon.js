@@ -10,7 +10,7 @@ export default function ChatIcon() {
       text: "Hello! I am your Software Solutions AI assistant. What type of business solution are you looking to build today?",
     },
   ]);
-  const [step, setStep] = useState(1); // 1: choice selection, 2: email capture, 3: thank you
+  const [step, setStep] = useState(1);
   const [selectedService, setSelectedService] = useState("");
   const [contactInfo, setContactInfo] = useState({ name: "", email: "", phone: "", message: "" });
   const [loading, setLoading] = useState(false);
@@ -82,14 +82,14 @@ export default function ChatIcon() {
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
       {/* Chat Window */}
       {isOpen && (
-        <div className="w-80 md:w-96 h-[480px] bg-zinc-900 border border-white/10 rounded-2xl shadow-2xl flex flex-col overflow-hidden mb-4 animate-fade-in glassmorphism">
+        <div className="w-80 md:w-96 h-[480px] bg-[#070d19] border border-[#00b87c]/30 rounded-2xl shadow-2xl flex flex-col overflow-hidden mb-4 animate-fade-in text-white">
           {/* Header */}
-          <div className="bg-primary px-4 py-3 flex items-center justify-between">
+          <div className="bg-[#00b87c] px-4 py-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-accent animate-pulse"></span>
-              <h3 className="text-white text-sm font-semibold tracking-wide">Solutions AI Assistant</h3>
+              <span className="w-2.5 h-2.5 rounded-full bg-[#00f5a0] animate-pulse"></span>
+              <h3 className="text-white text-sm font-bold tracking-wide">Solutions AI Assistant</h3>
             </div>
-            <button onClick={toggleChat} className="text-white hover:opacity-80 transition-opacity cursor-pointer">
+            <button onClick={toggleChat} className="text-white hover:opacity-80 transition-opacity cursor-pointer font-bold text-lg">
               &times;
             </button>
           </div>
@@ -101,8 +101,8 @@ export default function ChatIcon() {
                 key={index}
                 className={`max-w-[80%] rounded-2xl px-4 py-2.5 leading-relaxed ${
                   msg.sender === "bot"
-                    ? "bg-zinc-800 text-zinc-200 self-start rounded-tl-none border border-zinc-700/50"
-                    : "bg-primary text-white self-end rounded-tr-none"
+                    ? "bg-slate-900 text-slate-200 self-start rounded-tl-none border border-slate-800"
+                    : "bg-[#00b87c] text-white self-end rounded-tr-none"
                 }`}
               >
                 {msg.text}
@@ -122,7 +122,7 @@ export default function ChatIcon() {
                   <button
                     key={choice}
                     onClick={() => handleSelectChoice(choice)}
-                    className="w-full text-left bg-zinc-800 hover:bg-primary/20 hover:text-white border border-zinc-700/60 rounded-xl px-4 py-2 transition-all cursor-pointer text-xs"
+                    className="w-full text-left bg-slate-900 hover:bg-[#00b87c]/20 hover:text-white border border-slate-800 rounded-xl px-4 py-2 transition-all cursor-pointer text-xs"
                   >
                     {choice} &rarr;
                   </button>
@@ -132,7 +132,7 @@ export default function ChatIcon() {
 
             {/* Step 2 Inputs */}
             {step === 2 && (
-              <form onSubmit={handleFormSubmit} className="space-y-2 mt-2 w-full self-start bg-zinc-950/60 p-3 rounded-xl border border-white/5">
+              <form onSubmit={handleFormSubmit} className="space-y-2 mt-2 w-full self-start bg-slate-950 p-3 rounded-xl border border-slate-800">
                 <div>
                   <input
                     type="text"
@@ -141,7 +141,7 @@ export default function ChatIcon() {
                     placeholder="Your Name *"
                     value={contactInfo.name}
                     onChange={handleInputChange}
-                    className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-primary"
+                    className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-[#00b87c]"
                   />
                 </div>
                 <div>
@@ -152,7 +152,7 @@ export default function ChatIcon() {
                     placeholder="Your Email *"
                     value={contactInfo.email}
                     onChange={handleInputChange}
-                    className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-primary"
+                    className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-[#00b87c]"
                   />
                 </div>
                 <div>
@@ -162,15 +162,15 @@ export default function ChatIcon() {
                     placeholder="Phone (Optional)"
                     value={contactInfo.phone}
                     onChange={handleInputChange}
-                    className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-primary"
+                    className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-[#00b87c]"
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-2 bg-primary hover:bg-primary-hover text-white rounded-lg text-xs font-semibold transition-colors disabled:opacity-50 cursor-pointer"
+                  className="w-full py-2 bg-[#00b87c] hover:bg-[#009665] text-white rounded-lg text-xs font-semibold transition-colors disabled:opacity-50 cursor-pointer"
                 >
-                  {loading ? "Saving lead..." : "Get Proposal details"}
+                  {loading ? "Saving lead..." : "Get Proposal Details"}
                 </button>
               </form>
             )}
@@ -181,7 +181,7 @@ export default function ChatIcon() {
       {/* Floating Button */}
       <button
         onClick={toggleChat}
-        className="w-14 h-14 rounded-full bg-primary hover:bg-primary-hover text-white shadow-xl flex items-center justify-center transition-all duration-300 hover:scale-110 pulse-glow cursor-pointer"
+        className="w-14 h-14 rounded-full bg-[#00b87c] hover:bg-[#009665] text-white shadow-xl flex items-center justify-center transition-all duration-300 hover:scale-110 pulse-dot cursor-pointer"
         aria-label="Open support agent chat"
       >
         {isOpen ? (

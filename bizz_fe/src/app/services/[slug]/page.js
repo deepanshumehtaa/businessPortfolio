@@ -14,7 +14,6 @@ export default function ServiceDetailPage({ params: paramsPromise }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [error, setError] = useState(false);
 
-  // Static Fallbacks for offline resilience
   const staticServices = {
     "custom-software-development": {
       title: "Custom Software Development",
@@ -75,19 +74,12 @@ export default function ServiceDetailPage({ params: paramsPromise }) {
           const data = await res.json();
           setService(data);
         } else {
-          // Check if static exists
-          if (staticServices[slug]) {
-            setService(staticServices[slug]);
-          } else {
-            setError(true);
-          }
+          if (staticServices[slug]) setService(staticServices[slug]);
+          else setError(true);
         }
       } catch (err) {
-        if (staticServices[slug]) {
-          setService(staticServices[slug]);
-        } else {
-          setError(true);
-        }
+        if (staticServices[slug]) setService(staticServices[slug]);
+        else setError(true);
       } finally {
         setLoading(false);
       }
@@ -95,34 +87,31 @@ export default function ServiceDetailPage({ params: paramsPromise }) {
     fetchDetail();
   }, [slug]);
 
-  if (error) {
-    return notFound();
-  }
+  if (error) return notFound();
 
-  // Simple Markdown to JSX tags
   const renderMarkdown = (text) => {
     if (!text) return null;
     return text.split("\n\n").map((para, index) => {
       if (para.startsWith("### ")) {
         return (
-          <h3 key={index} className="text-2xl font-bold text-white mt-6 mb-4 tracking-tight">
+          <h3 key={index} className="text-2xl font-black text-slate-950 mt-6 mb-4 tracking-tight">
             {para.replace("### ", "")}
           </h3>
         );
       }
       if (para.startsWith("#### ")) {
         return (
-          <h4 key={index} className="text-lg font-bold text-primary mt-6 mb-3">
+          <h4 key={index} className="text-lg font-bold text-[#008f60] mt-6 mb-3">
             {para.replace("#### ", "")}
           </h4>
         );
       }
       if (para.startsWith("* ")) {
         return (
-          <ul key={index} className="space-y-2.5 my-4 pl-4 text-sm leading-relaxed text-zinc-400">
+          <ul key={index} className="space-y-2.5 my-4 pl-4 text-sm font-medium leading-relaxed text-slate-700">
             {para.split("\n").map((li, i) => (
               <li key={i} className="flex gap-2">
-                <span className="text-primary">•</span>
+                <span className="text-[#00b87c] font-black">•</span>
                 <span>{li.replace("* ", "")}</span>
               </li>
             ))}
@@ -130,7 +119,7 @@ export default function ServiceDetailPage({ params: paramsPromise }) {
         );
       }
       return (
-        <p key={index} className="text-zinc-400 text-sm md:text-base leading-relaxed mb-4">
+        <p key={index} className="text-slate-700 text-sm md:text-base font-medium leading-relaxed mb-4">
           {para}
         </p>
       );
@@ -161,35 +150,35 @@ export default function ServiceDetailPage({ params: paramsPromise }) {
 
       {loading ? (
         <div className="max-w-4xl mx-auto px-6 py-12 w-full animate-pulse space-y-6">
-          <div className="h-4 bg-zinc-800 w-1/4 rounded"></div>
-          <div className="h-10 bg-zinc-800 w-2/3 rounded"></div>
-          <div className="h-64 bg-zinc-800 w-full rounded-2xl"></div>
+          <div className="h-4 bg-slate-200 w-1/4 rounded"></div>
+          <div className="h-10 bg-slate-200 w-2/3 rounded"></div>
+          <div className="h-64 bg-slate-200 w-full rounded-3xl"></div>
         </div>
       ) : (
-        <div className="max-w-4xl mx-auto px-6 py-6 w-full flex flex-col gap-8">
+        <div className="max-w-5xl mx-auto px-6 py-6 w-full flex flex-col gap-8">
           {/* Breadcrumbs */}
-          <div className="text-xs text-zinc-500 font-medium">
-            <Link href="/" className="hover:text-white transition-colors">Home</Link>
+          <div className="text-xs text-slate-500 font-extrabold tracking-wide">
+            <Link href="/" className="hover:text-[#00b87c] transition-colors">Home</Link>
             <span className="mx-2">&gt;</span>
-            <Link href="/services" className="hover:text-white transition-colors">Services</Link>
+            <Link href="/services" className="hover:text-[#00b87c] transition-colors">Services</Link>
             <span className="mx-2">&gt;</span>
-            <span className="text-zinc-300">{service.title}</span>
+            <span className="text-slate-900">{service.title}</span>
           </div>
 
           {/* Heading */}
           <div className="flex flex-col gap-4">
-            <div className="inline-flex self-start bg-primary/10 border border-primary/20 rounded-full px-3 py-1 text-xs text-primary font-semibold">
+            <span className="inline-flex self-start bg-[#e6f9f3] border border-[#00b87c]/30 rounded-full px-3.5 py-1 text-xs text-[#008f60] font-extrabold uppercase font-mono tracking-wider">
               {service.category}
-            </div>
-            <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight leading-tight">
+            </span>
+            <h1 className="text-3xl md:text-5xl font-black text-slate-950 tracking-tight leading-tight">
               {service.title}
             </h1>
-            <p className="text-zinc-300 text-sm md:text-base leading-relaxed max-w-3xl">
+            <p className="text-slate-700 text-base md:text-lg font-medium leading-relaxed max-w-3xl">
               {service.summary}
             </p>
           </div>
 
-          <hr className="border-white/5" />
+          <hr className="border-slate-200" />
 
           {/* Details Body */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
@@ -199,31 +188,31 @@ export default function ServiceDetailPage({ params: paramsPromise }) {
 
             {/* Sticky Actions Sidebar */}
             <div className="lg:col-span-4 relative">
-              <div className="sticky top-28 bg-zinc-900 border border-white/5 rounded-2xl p-6 flex flex-col gap-6 shadow-xl">
+              <div className="sticky top-28 bg-white border border-slate-300 rounded-3xl p-6 flex flex-col gap-6 shadow-xl">
                 <div>
-                  <h3 className="text-sm font-semibold uppercase text-zinc-400 tracking-wider mb-3">Core Features</h3>
+                  <h3 className="text-xs font-extrabold uppercase text-slate-500 tracking-wider mb-3">Core Capabilities</h3>
                   <div className="flex flex-col gap-2">
                     {service.features && service.features.map((feat, index) => (
-                      <div key={index} className="flex items-center gap-2 text-xs text-zinc-300 font-mono">
-                        <span className="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                      <div key={index} className="flex items-center gap-2 text-xs text-slate-900 font-bold">
+                        <span className="w-2 h-2 rounded-full bg-[#00b87c]"></span>
                         {feat}
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="h-px bg-white/5"></div>
+                <div className="h-px bg-slate-200"></div>
 
                 <div className="flex flex-col gap-3">
                   <button
                     onClick={() => setModalOpen(true)}
-                    className="w-full py-3 bg-primary hover:bg-primary-hover text-white rounded-lg font-bold transition-all shadow-md shadow-primary/25 cursor-pointer text-center text-xs"
+                    className="w-full py-3.5 bg-[#00b87c] hover:bg-[#008f60] text-white rounded-full font-extrabold transition-all shadow-md shadow-[#00b87c]/25 cursor-pointer text-center text-xs uppercase tracking-wider"
                   >
                     Request Demo / Quote
                   </button>
                   <Link
                     href="/contact"
-                    className="w-full py-3 border border-zinc-800 hover:border-zinc-500 text-zinc-300 hover:text-white rounded-lg font-semibold transition-all text-center text-xs"
+                    className="w-full py-3.5 bg-slate-50 border border-slate-300 hover:border-[#00b87c] text-slate-900 font-extrabold rounded-full transition-all text-center text-xs uppercase tracking-wider"
                   >
                     Contact Sales
                   </Link>

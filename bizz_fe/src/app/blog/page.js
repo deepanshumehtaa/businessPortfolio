@@ -72,7 +72,6 @@ export default function BlogPage() {
           const postData = await postRes.json();
           setPosts(postData);
         } else {
-          // Filter static posts manually
           const filtered = selectedCat
             ? staticPosts.filter(p => p.category_slug === selectedCat)
             : staticPosts;
@@ -93,26 +92,27 @@ export default function BlogPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-6 w-full flex flex-col gap-12 py-6">
-      <div className="flex flex-col gap-4 max-w-2xl">
-        <span className="text-xs font-semibold text-primary uppercase tracking-widest">
-          ⚡ Technical Articles
+      {/* Header */}
+      <div className="flex flex-col gap-4 max-w-3xl">
+        <span className="inline-flex items-center gap-2 self-start text-xs font-extrabold text-[#008f60] uppercase tracking-widest bg-[#e6f9f3] px-4 py-1.5 rounded-full border border-[#00b87c]/30">
+          ⚡ Technical Articles & Insights
         </span>
-        <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight">
-          Engineering Insights & Growth
+        <h1 className="text-4xl md:text-5xl font-black text-slate-950 tracking-tight leading-tight">
+          Engineering Insights & <span className="text-[#00b87c]">Growth</span>
         </h1>
-        <p className="text-zinc-400 text-sm md:text-base leading-relaxed">
+        <p className="text-slate-700 text-base md:text-lg font-medium leading-relaxed">
           Deep dives into custom backend systems, advanced LLM workflows, API integrations, and conversion architectures to keep your business ahead.
         </p>
       </div>
 
       {/* Category filters */}
-      <div className="flex flex-wrap gap-2 border-b border-white/5 pb-6">
+      <div className="flex flex-wrap gap-2.5 border-b border-slate-300 pb-6">
         <button
           onClick={() => setSelectedCat("")}
-          className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+          className={`px-5 py-2 rounded-full text-xs font-extrabold transition-all cursor-pointer ${
             selectedCat === ""
-              ? "bg-primary text-white"
-              : "bg-zinc-900 text-zinc-400 hover:text-white"
+              ? "bg-[#00b87c] text-white shadow-md shadow-[#00b87c]/20"
+              : "bg-white border border-slate-300 text-slate-900 hover:border-[#00b87c]"
           }`}
         >
           All Topics
@@ -121,10 +121,10 @@ export default function BlogPage() {
           <button
             key={cat.slug}
             onClick={() => setSelectedCat(cat.slug)}
-            className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+            className={`px-5 py-2 rounded-full text-xs font-extrabold transition-all cursor-pointer ${
               selectedCat === cat.slug
-                ? "bg-primary text-white"
-                : "bg-zinc-900 text-zinc-400 hover:text-white"
+                ? "bg-[#00b87c] text-white shadow-md shadow-[#00b87c]/20"
+                : "bg-white border border-slate-300 text-slate-900 hover:border-[#00b87c]"
             }`}
           >
             {cat.name}
@@ -133,26 +133,26 @@ export default function BlogPage() {
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-pulse">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-80 bg-zinc-900 border border-white/5 rounded-2xl"></div>
+            <div key={i} className="h-96 bg-slate-200 border border-slate-300 rounded-3xl"></div>
           ))}
         </div>
       ) : posts.length === 0 ? (
-        <div className="text-center py-24 border border-dashed border-zinc-800 rounded-2xl">
-          <p className="text-zinc-500 text-sm">No articles found in this category.</p>
+        <div className="text-center py-24 border border-dashed border-slate-300 rounded-3xl bg-white">
+          <p className="text-slate-600 font-bold text-sm">No articles found in this category.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {posts.map((post) => (
             <Link
               href={`/blog/${post.slug}`}
               key={post.slug}
-              className="bg-zinc-900/40 border border-white/5 rounded-2xl overflow-hidden flex flex-col justify-between group hover:border-primary/20 transition-all shadow-xl"
+              className="bg-white border border-slate-300 rounded-3xl overflow-hidden flex flex-col justify-between group card-light-hover"
             >
               <div>
                 {/* Post Cover Photo */}
-                <div className="h-48 relative overflow-hidden bg-zinc-950">
+                <div className="h-52 relative overflow-hidden bg-slate-900">
                   <img
                     src={post.image_url || "https://images.unsplash.com/photo-1618401471353-b98aedd07871?auto=format&fit=crop&w=800&q=80"}
                     alt={post.title}
@@ -161,19 +161,19 @@ export default function BlogPage() {
                 </div>
                 {/* Content */}
                 <div className="p-6 flex flex-col gap-3">
-                  <span className="text-[10px] font-semibold text-primary uppercase font-mono tracking-wider">
+                  <span className="text-xs font-extrabold text-[#008f60] uppercase font-mono tracking-wider">
                     {post.category_name}
                   </span>
-                  <h2 className="text-lg font-bold text-white tracking-tight leading-snug group-hover:text-primary transition-colors">
+                  <h2 className="text-xl font-black text-slate-950 tracking-tight leading-snug group-hover:text-[#00b87c] transition-colors">
                     {post.title}
                   </h2>
-                  <p className="text-zinc-400 text-xs leading-relaxed line-clamp-3">
+                  <p className="text-slate-700 text-xs font-medium leading-relaxed line-clamp-3">
                     {post.summary || post.content.substring(0, 150) + "..."}
                   </p>
                 </div>
               </div>
 
-              <div className="px-6 pb-6 pt-2 flex items-center justify-between border-t border-white/5 mt-2 text-[10px] text-zinc-500 font-mono">
+              <div className="px-6 pb-6 pt-3 flex items-center justify-between border-t border-slate-200 text-xs text-slate-600 font-bold font-mono">
                 <span>By {post.author}</span>
                 <span>{new Date(post.published_at).toLocaleDateString()}</span>
               </div>
