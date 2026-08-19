@@ -106,9 +106,13 @@ echo -e "${CYAN}Seeding initial database tables...${NC}"
 echo -e "\n${YELLOW}[4/5] Setting up Next.js Frontend (bizz_fe)...${NC}"
 cd "${FE_DIR}"
 
-if [ ! -d "node_modules" ]; then
+export NODE_OPTIONS="--max-old-space-size=2048"
+export NEXT_TELEMETRY_DISABLED=1
+export CI=true
+
+if [ ! -d "node_modules" ] || [ ! -d "node_modules/@next/swc-linux-x64-gnu" ]; then
     echo -e "${CYAN}Installing frontend dependencies via pnpm...${NC}"
-    pnpm install --prefer-offline
+    pnpm install
 else
     echo -e "${GREEN}✔ Frontend dependencies (node_modules) already present. Skipping install.${NC}"
 fi
