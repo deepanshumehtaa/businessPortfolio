@@ -110,9 +110,9 @@ export NODE_OPTIONS="--max-old-space-size=2048"
 export NEXT_TELEMETRY_DISABLED=1
 export CI=true
 
-if [ ! -d "node_modules" ] || [ ! -d "node_modules/@next/swc-linux-x64-gnu" ]; then
+if [ ! -d "node_modules" ]; then
     echo -e "${CYAN}Installing frontend dependencies via pnpm...${NC}"
-    pnpm install
+    pnpm install --no-verify-store-integrity
 else
     echo -e "${GREEN}✔ Frontend dependencies (node_modules) already present. Skipping install.${NC}"
 fi
