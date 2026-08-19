@@ -106,8 +106,12 @@ echo -e "${CYAN}Seeding initial database tables...${NC}"
 echo -e "\n${YELLOW}[4/5] Setting up Next.js Frontend (bizz_fe)...${NC}"
 cd "${FE_DIR}"
 
-echo -e "${CYAN}Installing frontend dependencies via pnpm...${NC}"
-pnpm install
+if [ ! -d "node_modules" ]; then
+    echo -e "${CYAN}Installing frontend dependencies via pnpm...${NC}"
+    pnpm install --prefer-offline
+else
+    echo -e "${GREEN}✔ Frontend dependencies (node_modules) already present. Skipping install.${NC}"
+fi
 
 echo -e "${CYAN}Building Next.js production bundle...${NC}"
 pnpm build
