@@ -7,19 +7,50 @@
 
 set -e
 
-# Ensure NVM & modern Node.js (v22) environment is loaded
-export NVM_DIR="$HOME/.nvm"
-if [ -s "$NVM_DIR/nvm.sh" ]; then
-    . "$NVM_DIR/nvm.sh"
-fi
-export PATH="$HOME/.nvm/versions/node/v22.23.1/bin:$HOME/.local/bin:$PATH"
-
 # ANSI Color Codes
 GREEN='\033[0;32m'
 CYAN='\033[0;36m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
+
+# ------------------------------------------------------------------------------
+# STEP 0: ENSURE MODERN NODE.JS (>= v18) ENVIRONMENT
+# ------------------------------------------------------------------------------
+export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
+if [ ! -d "$NVM_DIR" ] && [ -d "/root/.nvm" ]; then
+    export NVM_DIR="/root/.nvm"
+fi
+
+if [ -s "$NVM_DIR/nvm.sh" ]; then
+    . "$NVM_DIR/nvm.sh"
+fi
+
+# Prepend candidate NVM bin paths to PATH
+for nvm_bin in "$NVM_DIR/versions/node/"*/bin; do
+    if [ -d "$nvm_bin" ]; then
+        export PATH="$nvm_bin:$PATH"
+    fi
+done
+export PATH="$HOME/.local/bin:$PATH"
+
+# Verify node version >= 18
+NODE_MAJOR=0
+if command -v node &> /dev/null; then
+    NODE_MAJOR=$(node -v | cut -d'.' -f1 | sed 's/[^0-9]//g')
+fi
+
+if [ "$NODE_MAJOR" -lt 18 ]; then
+    echo -e "${YELLOW}Detected missing or legacy Node.js version (v${NODE_MAJOR}). Upgrading to Node.js v22 via NVM...${NC}"
+    if ! command -v nvm &> /dev/null; then
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    fi
+    nvm install 22
+    nvm use 22
+    export PATH="$NVM_DIR/versions/node/$(nvm current)/bin:$PATH"
+fi
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BE_DIR="${ROOT_DIR}/bizz_be"
