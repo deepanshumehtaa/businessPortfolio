@@ -347,7 +347,7 @@ export default function Home() {
 
             {/* STEP 01 (LEFT) */}
             <div className="md:contents">
-              <div className="relative pl-8 md:pl-0 md:col-span-4 zigzag-card-dark p-6 rounded-2xl">
+              <div className="relative pl-8 md:pl-0 md:col-span-4 zigzag-card-dark px-8 md:px-10 py-7 rounded-2xl">
                 <span className="absolute -left-4 md:left-auto md:right-0 md:translate-x-1/2 w-8 h-8 rounded-full bg-[#00b87c] border-4 border-[#070d19] z-10 flex items-center justify-center text-xs font-black text-white font-mono shadow-lg shadow-[#00b87c]/50">
                   01
                 </span>
@@ -368,7 +368,7 @@ export default function Home() {
             <div className="md:contents">
               <div className="hidden md:block md:col-span-4"></div>
               <div className="hidden md:block md:col-span-1"></div>
-              <div className="relative pl-8 md:pl-0 md:col-span-4 zigzag-card-dark p-6 rounded-2xl">
+              <div className="relative pl-8 md:pl-0 md:col-span-4 zigzag-card-dark px-8 md:px-10 py-7 rounded-2xl">
                 <span className="absolute -left-4 md:left-0 md:-translate-x-1/2 w-8 h-8 rounded-full bg-[#00b87c] border-4 border-[#070d19] z-10 flex items-center justify-center text-xs font-black text-white font-mono shadow-lg shadow-[#00b87c]/50">
                   02
                 </span>
@@ -385,7 +385,7 @@ export default function Home() {
 
             {/* STEP 03 (LEFT) */}
             <div className="md:contents">
-              <div className="relative pl-8 md:pl-0 md:col-span-4 zigzag-card-dark p-6 rounded-2xl">
+              <div className="relative pl-8 md:pl-0 md:col-span-4 zigzag-card-dark px-8 md:px-10 py-7 rounded-2xl">
                 <span className="absolute -left-4 md:left-auto md:right-0 md:translate-x-1/2 w-8 h-8 rounded-full bg-[#00b87c] border-4 border-[#070d19] z-10 flex items-center justify-center text-xs font-black text-white font-mono shadow-lg shadow-[#00b87c]/50">
                   03
                 </span>
@@ -406,7 +406,7 @@ export default function Home() {
             <div className="md:contents">
               <div className="hidden md:block md:col-span-4"></div>
               <div className="hidden md:block md:col-span-1"></div>
-              <div className="relative pl-8 md:pl-0 md:col-span-4 zigzag-card-dark p-6 rounded-2xl">
+              <div className="relative pl-8 md:pl-0 md:col-span-4 zigzag-card-dark px-8 md:px-10 py-7 rounded-2xl">
                 <span className="absolute -left-4 md:left-0 md:-translate-x-1/2 w-8 h-8 rounded-full bg-[#00b87c] border-4 border-[#070d19] z-10 flex items-center justify-center text-xs font-black text-white font-mono shadow-lg shadow-[#00b87c]/50">
                   04
                 </span>
@@ -423,7 +423,7 @@ export default function Home() {
 
             {/* STEP 05 (LEFT) */}
             <div className="md:contents">
-              <div className="relative pl-8 md:pl-0 md:col-span-4 zigzag-card-dark p-6 rounded-2xl">
+              <div className="relative pl-8 md:pl-0 md:col-span-4 zigzag-card-dark px-8 md:px-10 py-7 rounded-2xl">
                 <span className="absolute -left-4 md:left-auto md:right-0 md:translate-x-1/2 w-8 h-8 rounded-full bg-[#00b87c] border-4 border-[#070d19] z-10 flex items-center justify-center text-xs font-black text-white font-mono shadow-lg shadow-[#00b87c]/50">
                   05
                 </span>

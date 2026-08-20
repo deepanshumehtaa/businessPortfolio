@@ -42,7 +42,7 @@ export default function BlogDetailPage({ params: paramsPromise }) {
   useEffect(() => {
     async function fetchBlogDetail() {
       try {
-        const res = await fetch(`http://localhost:8000/api/blogs/posts/${slug}/`);
+        const res = await fetch(`/api/blogs/posts/${slug}/`);
         if (res.ok) {
           const data = await res.json();
           setPost(data);

@@ -69,7 +69,7 @@ export default function ServiceDetailPage({ params: paramsPromise }) {
   useEffect(() => {
     async function fetchDetail() {
       try {
-        const res = await fetch(`http://localhost:8000/api/services/${slug}/`);
+        const res = await fetch(`/api/services/${slug}/`);
         if (res.ok) {
           const data = await res.json();
           setService(data);

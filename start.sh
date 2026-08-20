@@ -2,7 +2,7 @@
 
 # ==============================================================================
 # Production Startup & Process Manager Script
-# Enterprise Software Solutions Portfolio
+# Enterprise Software Solutions Portfolio (Full-Stack Next.js)
 # ==============================================================================
 
 set -e
@@ -53,11 +53,8 @@ if [ "$NODE_MAJOR" -lt 18 ]; then
 fi
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BE_DIR="${ROOT_DIR}/bizz_be"
 FE_DIR="${ROOT_DIR}/bizz_fe"
-
-BE_PORT=8000
-FE_PORT=3000
+PORT=3000
 
 echo -e "${CYAN}======================================================${NC}"
 echo -e "${CYAN}   🚀 SOFTWARE SOLUTIONS PRODUCTION DEPLOYMENT   ${NC}"
@@ -66,42 +63,33 @@ echo -e "${CYAN}======================================================${NC}"
 # ------------------------------------------------------------------------------
 # STEP 1: PORT CHECK & PROCESS TERMINATION
 # ------------------------------------------------------------------------------
-echo -e "\n${YELLOW}[1/5] Checking ports ${BE_PORT} and ${FE_PORT}...${NC}"
+echo -e "\n${YELLOW}[1/4] Checking port ${PORT}...${NC}"
 
 kill_port() {
-    local PORT=$1
-    if fuser ${PORT}/tcp >/dev/null 2>&1; then
-        echo -e "${YELLOW}Port ${PORT} is currently in use. Terminating existing process...${NC}"
-        fuser -k ${PORT}/tcp || true
+    local P=$1
+    if fuser ${P}/tcp >/dev/null 2>&1; then
+        echo -e "${YELLOW}Port ${P} is currently in use. Terminating existing process...${NC}"
+        fuser -k ${P}/tcp || true
         sleep 1
-    elif lsof -t -i:${PORT} >/dev/null 2>&1; then
-        echo -e "${YELLOW}Port ${PORT} is currently in use. Killing process PID...${NC}"
-        lsof -t -i:${PORT} | xargs kill -9 2>/dev/null || true
+    elif lsof -t -i:${P} >/dev/null 2>&1; then
+        echo -e "${YELLOW}Port ${P} is currently in use. Killing process PID...${NC}"
+        lsof -t -i:${P} | xargs kill -9 2>/dev/null || true
         sleep 1
     else
-        echo -e "${GREEN}Port ${PORT} is free.${NC}"
+        echo -e "${GREEN}Port ${P} is free.${NC}"
     fi
 }
 
-kill_port ${BE_PORT}
-kill_port ${FE_PORT}
+kill_port ${PORT}
 
 # ------------------------------------------------------------------------------
-# STEP 2: VERIFY SYSTEM TOOLS (UV, PNPM, PM2)
+# STEP 2: VERIFY TOOLCHAIN (PNPM, PM2)
 # ------------------------------------------------------------------------------
-echo -e "\n${YELLOW}[2/5] Verifying toolchain (uv, pnpm, pm2)...${NC}"
-
-# Check UV
-if ! command -v uv &> /dev/null; then
-    echo -e "${YELLOW}'uv' tool not found. Installing uv...${NC}"
-    curl -sSf https://astral.sh/uv/install.sh | sh
-    export PATH="$HOME/.local/bin:$PATH"
-fi
-echo -e "${GREEN}✔ uv is ready: $(uv --version)${NC}"
+echo -e "\n${YELLOW}[2/4] Verifying toolchain (pnpm, pm2)...${NC}"
 
 # Check PNPM
 if ! command -v pnpm &> /dev/null; then
-    echo -e "${RED}Error: 'pnpm' is not installed. Installing pnpm globally via npm...${NC}"
+    echo -e "${RED}Installing pnpm globally via npm...${NC}"
     npm install -g pnpm
 fi
 echo -e "${GREEN}✔ pnpm version: $(pnpm --version)${NC}"
@@ -114,34 +102,9 @@ fi
 echo -e "${GREEN}✔ pm2 version: $(pm2 --version)${NC}"
 
 # ------------------------------------------------------------------------------
-# STEP 3: BACKEND SETUP & UVICORN PREPARATION
+# STEP 3: FRONTEND SETUP & PRODUCTION BUILD
 # ------------------------------------------------------------------------------
-echo -e "\n${YELLOW}[3/5] Setting up Django Backend (bizz_be)...${NC}"
-cd "${BE_DIR}"
-
-# Create venv if missing
-if [ ! -d ".venv" ]; then
-    echo -e "${YELLOW}Creating Python virtual environment using uv...${NC}"
-    uv venv .venv
-else
-    echo -e "${GREEN}✔ Virtual environment (.venv) located.${NC}"
-fi
-
-# Install Dependencies
-echo -e "${CYAN}Installing backend Python dependencies...${NC}"
-uv pip install -r requirements.txt --python .venv/bin/python
-
-# Run Migrations & Seeding
-echo -e "${CYAN}Running database migrations...${NC}"
-.venv/bin/python manage.py migrate --noinput
-
-echo -e "${CYAN}Seeding initial database tables...${NC}"
-.venv/bin/python seed.py
-
-# ------------------------------------------------------------------------------
-# STEP 4: FRONTEND SETUP & PRODUCTION BUILD
-# ------------------------------------------------------------------------------
-echo -e "\n${YELLOW}[4/5] Setting up Next.js Frontend (bizz_fe)...${NC}"
+echo -e "\n${YELLOW}[3/4] Building Next.js Application (bizz_fe)...${NC}"
 cd "${FE_DIR}"
 
 export NODE_OPTIONS="--max-old-space-size=2048"
@@ -149,38 +112,31 @@ export NEXT_TELEMETRY_DISABLED=1
 export CI=true
 
 if [ ! -d "node_modules" ]; then
-    echo -e "${CYAN}Installing frontend dependencies via pnpm...${NC}"
+    echo -e "${CYAN}Installing dependencies via pnpm...${NC}"
     pnpm install --no-verify-store-integrity
 else
-    echo -e "${GREEN}✔ Frontend dependencies (node_modules) already present. Skipping install.${NC}"
+    echo -e "${GREEN}✔ Dependencies (node_modules) already present. Skipping install.${NC}"
 fi
 
 echo -e "${CYAN}Building Next.js production bundle...${NC}"
 pnpm build
 
 # ------------------------------------------------------------------------------
-# STEP 5: PM2 PROCESS MANAGEMENT
+# STEP 4: PM2 PROCESS MANAGEMENT
 # ------------------------------------------------------------------------------
-echo -e "\n${YELLOW}[5/5] Launching applications using PM2...${NC}"
+echo -e "\n${YELLOW}[4/4] Launching application using PM2...${NC}"
 cd "${ROOT_DIR}"
 
-# Stop any existing PM2 processes for this project
+# Stop any existing PM2 process for this project
 pm2 delete bizz_be_api 2>/dev/null || true
 pm2 delete bizz_fe_app 2>/dev/null || true
 
-# Start Backend ASGI (Uvicorn) via PM2
-echo -e "${CYAN}Starting Backend Uvicorn Server on port ${BE_PORT} with PM2...${NC}"
-pm2 start "${BE_DIR}/.venv/bin/python" \
-    --name "bizz_be_api" \
-    --cwd "${BE_DIR}" \
-    -- -m uvicorn bizz_be.asgi:application --host 0.0.0.0 --port ${BE_PORT} --workers 4
-
 # Start Frontend (Next.js) via PM2
-echo -e "${CYAN}Starting Frontend Production Server on port ${FE_PORT} with PM2...${NC}"
+echo -e "${CYAN}Starting Production Web Server on port ${PORT} with PM2...${NC}"
 pm2 start pnpm \
     --name "bizz_fe_app" \
     --cwd "${FE_DIR}" \
-    -- start --port ${FE_PORT}
+    -- start --port ${PORT}
 
 # Save PM2 state
 pm2 save
@@ -188,8 +144,8 @@ pm2 save
 echo -e "\n${GREEN}======================================================${NC}"
 echo -e "${GREEN}   ✨ DEPLOYMENT COMPLETED SUCCESSFULLY!   ${NC}"
 echo -e "${GREEN}======================================================${NC}"
-echo -e "${CYAN}Backend API:${NC}  http://localhost:${BE_PORT}/api/"
-echo -e "${CYAN}Frontend App:${NC} http://localhost:${FE_PORT}/"
-echo -e "${CYAN}Admin Panel:${NC}  http://localhost:${FE_PORT}/admin"
+echo -e "${CYAN}Web Application:${NC} http://localhost:${PORT}/"
+echo -e "${CYAN}Admin Panel:${NC}     http://localhost:${PORT}/admin"
+echo -e "${CYAN}API Services:${NC}    http://localhost:${PORT}/api/services/"
 echo -e "\n${YELLOW}PM2 Process Status:${NC}"
 pm2 status

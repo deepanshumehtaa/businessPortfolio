@@ -55,7 +55,7 @@ export default function BlogPage() {
     async function fetchBlogData() {
       setLoading(true);
       try {
-        const catRes = await fetch("http://localhost:8000/api/blogs/categories/");
+        const catRes = await fetch("/api/blogs/categories/");
         if (catRes.ok) {
           const catData = await catRes.json();
           setCategories(catData);
@@ -63,11 +63,11 @@ export default function BlogPage() {
           setCategories(staticCategories);
         }
 
-        const url = selectedCat
-          ? `http://localhost:8000/api/blogs/posts/?category=${selectedCat}`
-          : "http://localhost:8000/api/blogs/posts/";
+        const postUrl = selectedCat
+          ? `/api/blogs/posts/?category=${selectedCat}`
+          : "/api/blogs/posts/";
 
-        const postRes = await fetch(url);
+        const postRes = await fetch(postUrl);
         if (postRes.ok) {
           const postData = await postRes.json();
           setPosts(postData);

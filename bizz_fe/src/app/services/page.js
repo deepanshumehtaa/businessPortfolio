@@ -72,7 +72,7 @@ export default function ServicesPage() {
   useEffect(() => {
     async function fetchServices() {
       try {
-        const res = await fetch("http://localhost:8000/api/services/");
+        const res = await fetch("/api/services/", { cache: "no-store" });
         if (res.ok) {
           const data = await res.json();
           setServices(data);

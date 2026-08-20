@@ -1,8 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+function getInitialDateTime() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  const hours = String(now.getHours()).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+
+  const todayDate = `${year}-${month}-${day}`;
+  const currentTime = `${hours}:${minutes}`;
+  const currentDatetime = `${todayDate}T${currentTime}`;
+
+  return { todayDate, currentTime, currentDatetime };
+}
 
 export default function DemoModal({ isOpen, onClose, initialType = "demo", services = [] }) {
+  const { todayDate, currentTime, currentDatetime } = getInitialDateTime();
+
   const [type, setType] = useState(initialType); // 'demo' or 'call'
   const [formData, setFormData] = useState({
     name: "",
@@ -10,14 +27,27 @@ export default function DemoModal({ isOpen, onClose, initialType = "demo", servi
     phone: "",
     company: "",
     service_required: services[0]?.title || "Custom Software Development",
-    booking_date: "",
-    booking_time: "",
-    scheduled_datetime: "",
+    booking_date: todayDate,
+    booking_time: currentTime,
+    scheduled_datetime: currentDatetime,
     notes: "",
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+
+  // Re-sync initial date/time values when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      const dt = getInitialDateTime();
+      setFormData((prev) => ({
+        ...prev,
+        booking_date: dt.todayDate,
+        booking_time: dt.currentTime,
+        scheduled_datetime: dt.currentDatetime,
+      }));
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -32,8 +62,8 @@ export default function DemoModal({ isOpen, onClose, initialType = "demo", servi
 
     const url =
       type === "demo"
-        ? "http://localhost:8000/api/book-demo/"
-        : "http://localhost:8000/api/schedule-call/";
+        ? "/api/book-demo/"
+        : "/api/schedule-call/";
 
     const payload =
       type === "demo"
@@ -62,15 +92,16 @@ export default function DemoModal({ isOpen, onClose, initialType = "demo", servi
 
       if (res.ok) {
         setSuccess(true);
+        const dt = getInitialDateTime();
         setFormData({
           name: "",
           email: "",
           phone: "",
           company: "",
           service_required: services[0]?.title || "Custom Software Development",
-          booking_date: "",
-          booking_time: "",
-          scheduled_datetime: "",
+          booking_date: dt.todayDate,
+          booking_time: dt.currentTime,
+          scheduled_datetime: dt.currentDatetime,
           notes: "",
         });
       } else {
@@ -212,6 +243,7 @@ export default function DemoModal({ isOpen, onClose, initialType = "demo", servi
                       type="date"
                       name="booking_date"
                       required
+                      min={todayDate}
                       value={formData.booking_date}
                       onChange={handleChange}
                       className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-primary transition-colors"
@@ -250,6 +282,7 @@ export default function DemoModal({ isOpen, onClose, initialType = "demo", servi
                     type="datetime-local"
                     name="scheduled_datetime"
                     required
+                    min={currentDatetime}
                     value={formData.scheduled_datetime}
                     onChange={handleChange}
                     className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-primary transition-colors"

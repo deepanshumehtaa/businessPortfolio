@@ -33,7 +33,7 @@ export default function AdminPage() {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:8000/api/admin/login/", {
+      const res = await fetch("/api/admin/login/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
@@ -64,7 +64,7 @@ export default function AdminPage() {
 
   const fetchDashboard = async (authToken) => {
     try {
-      const res = await fetch("http://localhost:8000/api/admin/dashboard/", {
+      const res = await fetch("/api/admin/dashboard/", {
         headers: { Authorization: `Bearer ${authToken}` },
       });
       if (res.ok) {
@@ -82,11 +82,11 @@ export default function AdminPage() {
     if (!token) return;
     setLoading(true);
     let url = "";
-    if (tabName === "enquiries") url = "http://localhost:8000/api/admin/enquiries/";
-    if (tabName === "calls") url = "http://localhost:8000/api/admin/calls/";
-    if (tabName === "demos") url = "http://localhost:8000/api/admin/demos/";
+    if (tabName === "enquiries") url = "/api/admin/enquiries/";
+    if (tabName === "calls") url = "/api/admin/calls/";
+    if (tabName === "demos") url = "/api/admin/demos/";
     if (tabName === "blogs") {
-      url = "http://localhost:8000/api/admin/blogs/";
+      url = "/api/admin/blogs/";
       fetchCategories();
     }
 
@@ -109,7 +109,7 @@ export default function AdminPage() {
 
   const fetchCategories = async () => {
     try {
-      const res = await fetch("http://localhost:8000/api/blogs/categories/");
+      const res = await fetch("/api/blogs/categories/");
       if (res.ok) {
         const data = await res.json();
         setCategories(data);
@@ -125,7 +125,7 @@ export default function AdminPage() {
   const handleUpdateEnquiryStatus = async (id, currentStatus) => {
     const nextStatus = currentStatus === "New" ? "In Progress" : "Resolved";
     try {
-      const res = await fetch(`http://localhost:8000/api/admin/enquiries/${id}/`, {
+      const res = await fetch(`/api/admin/enquiries/${id}/`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -148,7 +148,7 @@ export default function AdminPage() {
     setBlogSuccess(false);
 
     try {
-      const res = await fetch("http://localhost:8000/api/admin/blogs/", {
+      const res = await fetch("/api/admin/blogs/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -173,7 +173,7 @@ export default function AdminPage() {
   const handleDeleteBlog = async (id) => {
     if (!confirm("Are you sure you want to delete this article?")) return;
     try {
-      const res = await fetch(`http://localhost:8000/api/admin/blogs/${id}/`, {
+      const res = await fetch(`/api/admin/blogs/${id}/`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
