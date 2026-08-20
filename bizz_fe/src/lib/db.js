@@ -107,13 +107,27 @@ function initDatabase() {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         email TEXT NOT NULL,
+        phone TEXT,
         company TEXT,
         service_required TEXT NOT NULL,
         booking_date TEXT NOT NULL,
         booking_time TEXT NOT NULL,
+        is_read INTEGER DEFAULT 0,
+        is_archived INTEGER DEFAULT 0,
         created_at TEXT NOT NULL
       );
     `);
+
+    // Ensure columns exist on existing database files
+    try {
+      db.exec("ALTER TABLE demos ADD COLUMN phone TEXT;");
+    } catch (e) {}
+    try {
+      db.exec("ALTER TABLE demos ADD COLUMN is_read INTEGER DEFAULT 0;");
+    } catch (e) {}
+    try {
+      db.exec("ALTER TABLE demos ADD COLUMN is_archived INTEGER DEFAULT 0;");
+    } catch (e) {}
 
     // Seed Initial Data if tables are empty
     const countServices = db.prepare("SELECT COUNT(*) as count FROM services").get().count;
@@ -416,20 +430,43 @@ export function addCall(callData) {
   return db.prepare("SELECT * FROM calls WHERE id = ?").get(result.lastInsertRowid);
 }
 
-export function getDemos() {
-  return db.prepare("SELECT * FROM demos ORDER BY id DESC").all();
+export function getDemos(archived = false) {
+  const flag = archived ? 1 : 0;
+  return db.prepare("SELECT * FROM demos WHERE is_archived = ? ORDER BY id DESC").all(flag);
+}
+
+export function updateDemo(id, updates) {
+  const current = db.prepare("SELECT * FROM demos WHERE id = ?").get(parseInt(id));
+  if (!current) return null;
+
+  const is_read = updates.is_read !== undefined ? (updates.is_read ? 1 : 0) : current.is_read;
+  const is_archived = updates.is_archived !== undefined ? (updates.is_archived ? 1 : 0) : current.is_archived;
+
+  db.prepare("UPDATE demos SET is_read = ?, is_archived = ? WHERE id = ?").run(
+    is_read,
+    is_archived,
+    parseInt(id)
+  );
+
+  return db.prepare("SELECT * FROM demos WHERE id = ?").get(parseInt(id));
+}
+
+export function deleteDemo(id) {
+  db.prepare("DELETE FROM demos WHERE id = ?").run(parseInt(id));
+  return true;
 }
 
 export function addDemo(demoData) {
   const createdAt = new Date().toISOString();
   const stmt = db.prepare(`
-    INSERT INTO demos (name, email, company, service_required, booking_date, booking_time, created_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO demos (name, email, phone, company, service_required, booking_date, booking_time, is_read, is_archived, created_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, 0, 0, ?)
   `);
 
   const result = stmt.run(
     demoData.name,
     demoData.email,
+    demoData.phone || "",
     demoData.company || "",
     demoData.service_required,
     demoData.booking_date,

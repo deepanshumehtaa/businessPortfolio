@@ -1,16 +1,31 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
 export default function CustomCursor() {
+  const pathname = usePathname();
   const [dotPos, setDotPos] = useState({ x: -100, y: -100 });
   const [ringPos, setRingPos] = useState({ x: -100, y: -100 });
   const [isHovered, setIsHovered] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
+  const isAdminPage = pathname && pathname.startsWith("/admin");
+
   useEffect(() => {
+    if (isAdminPage) {
+      document.body.classList.add("admin-mode");
+      setIsVisible(false);
+      return;
+    } else {
+      document.body.classList.remove("admin-mode");
+    }
+
     // Desktop screens only (>= 992px)
-    if (window.innerWidth < 992) return;
+    if (window.innerWidth < 992) {
+      setIsVisible(false);
+      return;
+    }
 
     setIsVisible(true);
 
@@ -43,10 +58,11 @@ export default function CustomCursor() {
     return () => {
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("mouseover", onMouseOver);
+      document.body.classList.remove("admin-mode");
     };
-  }, []);
+  }, [isAdminPage]);
 
-  if (!isVisible) return null;
+  if (!isVisible || isAdminPage) return null;
 
   return (
     <>

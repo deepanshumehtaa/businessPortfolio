@@ -36,18 +36,29 @@ export default function DemoModal({ isOpen, onClose, initialType = "demo", servi
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
 
-  // Re-sync initial date/time values when modal opens
+  // Re-sync initial date/time values & attach ESC key listener
   useEffect(() => {
-    if (isOpen) {
-      const dt = getInitialDateTime();
-      setFormData((prev) => ({
-        ...prev,
-        booking_date: dt.todayDate,
-        booking_time: dt.currentTime,
-        scheduled_datetime: dt.currentDatetime,
-      }));
-    }
-  }, [isOpen]);
+    if (!isOpen) return;
+
+    const dt = getInitialDateTime();
+    setFormData((prev) => ({
+      ...prev,
+      booking_date: dt.todayDate,
+      booking_time: dt.currentTime,
+      scheduled_datetime: dt.currentDatetime,
+    }));
+
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -70,6 +81,7 @@ export default function DemoModal({ isOpen, onClose, initialType = "demo", servi
         ? {
             name: formData.name,
             email: formData.email,
+            phone: formData.phone,
             company: formData.company,
             service_required: formData.service_required,
             booking_date: formData.booking_date,
@@ -198,16 +210,30 @@ export default function DemoModal({ isOpen, onClose, initialType = "demo", servi
 
             {type === "demo" ? (
               <>
-                <div>
-                  <label className="block text-sm font-medium text-zinc-300 mb-1">Company Name</label>
-                  <input
-                    type="text"
-                    name="company"
-                    value={formData.company}
-                    onChange={handleChange}
-                    className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-primary transition-colors"
-                    placeholder="Acme Corp"
-                  />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-zinc-300 mb-1">Phone Number *</label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      required
+                      value={formData.phone}
+                      onChange={handleChange}
+                      className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-primary transition-colors"
+                      placeholder="+1 (555) 000-0000"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-zinc-300 mb-1">Company Name</label>
+                    <input
+                      type="text"
+                      name="company"
+                      value={formData.company}
+                      onChange={handleChange}
+                      className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-primary transition-colors"
+                      placeholder="Acme Corp"
+                    />
+                  </div>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-zinc-300 mb-1">Service Required *</label>

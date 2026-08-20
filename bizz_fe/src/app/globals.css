@@ -37,9 +37,15 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: -0.02em;
 }
 
-/* Custom Cyber Cursor (Desktop Only) */
+/* Custom Cyber Cursor (Desktop Only - Non-Admin Routes Only) */
 @media (min-width: 992px) {
-  body, a, button, input, select, textarea, .cursor-none {
+  body:not(.admin-mode),
+  body:not(.admin-mode) a,
+  body:not(.admin-mode) button,
+  body:not(.admin-mode) input,
+  body:not(.admin-mode) select,
+  body:not(.admin-mode) textarea,
+  body:not(.admin-mode) .cursor-none {
     cursor: none !important;
   }
 }
@@ -207,3 +213,22 @@ body {
     transform: translateY(0);
   }
 }
+
+/* Restores standard system cursor for Admin Panel & Navbar when on admin pages */
+body.admin-mode,
+body.admin-mode *,
+.admin-panel-root,
+.admin-panel-root * {
+  cursor: auto !important;
+}
+
+body.admin-mode a,
+body.admin-mode button,
+body.admin-mode input,
+body.admin-mode select,
+body.admin-mode textarea,
+.admin-panel-root button,
+.admin-panel-root a {
+  cursor: pointer !important;
+}
+

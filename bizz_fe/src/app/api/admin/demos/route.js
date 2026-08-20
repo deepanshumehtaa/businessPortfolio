@@ -10,6 +10,9 @@ export async function GET(request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const demos = getDemos();
+  const { searchParams } = new URL(request.url);
+  const archived = searchParams.get("archived") === "true";
+
+  const demos = getDemos(archived);
   return NextResponse.json(demos);
 }

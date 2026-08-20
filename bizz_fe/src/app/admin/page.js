@@ -7,16 +7,26 @@ export default function AdminPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
-  
+
   // Dashboard states
   const [stats, setStats] = useState(null);
   const [activeTab, setActiveTab] = useState("dashboard");
   const [loading, setLoading] = useState(false);
   const [dataList, setDataList] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [demoArchivedView, setDemoArchivedView] = useState(false);
 
   // Form states for creating blogs
-  const [blogForm, setBlogForm] = useState({ title: "", slug: "", author: "Admin", category: "", content: "", image_url: "", meta_title: "", meta_description: "" });
+  const [blogForm, setBlogForm] = useState({
+    title: "",
+    slug: "",
+    author: "Admin",
+    category: "",
+    content: "",
+    image_url: "",
+    meta_title: "",
+    meta_description: "",
+  });
   const [blogSuccess, setBlogSuccess] = useState(false);
 
   useEffect(() => {
@@ -78,13 +88,13 @@ export default function AdminPage() {
     }
   };
 
-  const fetchTabDetails = async (tabName) => {
+  const fetchTabDetails = async (tabName, archivedDemos = false) => {
     if (!token) return;
     setLoading(true);
     let url = "";
     if (tabName === "enquiries") url = "/api/admin/enquiries/";
     if (tabName === "calls") url = "/api/admin/calls/";
-    if (tabName === "demos") url = "/api/admin/demos/";
+    if (tabName === "demos") url = `/api/admin/demos/?archived=${archivedDemos}`;
     if (tabName === "blogs") {
       url = "/api/admin/blogs/";
       fetchCategories();
@@ -114,7 +124,7 @@ export default function AdminPage() {
         const data = await res.json();
         setCategories(data);
         if (data.length > 0 && !blogForm.category) {
-          setBlogForm(prev => ({ ...prev, category: data[0].id }));
+          setBlogForm((prev) => ({ ...prev, category: data[0].id }));
         }
       }
     } catch (err) {
@@ -142,6 +152,60 @@ export default function AdminPage() {
     }
   };
 
+  // Demo Actions: Toggle Read, Toggle Archive, Delete
+  const handleToggleDemoRead = async (id, currentReadState) => {
+    try {
+      const res = await fetch(`/api/admin/demos/${id}/`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ is_read: !currentReadState }),
+      });
+      if (res.ok) {
+        fetchTabDetails("demos", demoArchivedView);
+      }
+    } catch (err) {
+      console.error("Failed to update demo read status");
+    }
+  };
+
+  const handleToggleDemoArchive = async (id, currentArchivedState) => {
+    try {
+      const res = await fetch(`/api/admin/demos/${id}/`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ is_archived: !currentArchivedState }),
+      });
+      if (res.ok) {
+        fetchTabDetails("demos", demoArchivedView);
+        fetchDashboard(token);
+      }
+    } catch (err) {
+      console.error("Failed to update demo archive status");
+    }
+  };
+
+  const handleDeleteDemo = async (id) => {
+    if (!confirm("Are you sure you want to delete this demo booking permanently?")) return;
+    try {
+      const res = await fetch(`/api/admin/demos/${id}/`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        fetchTabDetails("demos", demoArchivedView);
+        fetchDashboard(token);
+      }
+    } catch (err) {
+      console.error("Failed to delete demo booking");
+    }
+  };
+
   const handleBlogSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -159,7 +223,16 @@ export default function AdminPage() {
 
       if (res.ok) {
         setBlogSuccess(true);
-        setBlogForm({ title: "", slug: "", author: "Admin", category: categories[0]?.id || "", content: "", image_url: "", meta_title: "", meta_description: "" });
+        setBlogForm({
+          title: "",
+          slug: "",
+          author: "Admin",
+          category: categories[0]?.id || "",
+          content: "",
+          image_url: "",
+          meta_title: "",
+          meta_description: "",
+        });
         fetchTabDetails("blogs");
         fetchDashboard(token);
       }
@@ -188,7 +261,10 @@ export default function AdminPage() {
 
   const handleTabChange = (tabName) => {
     setActiveTab(tabName);
-    if (tabName !== "dashboard") {
+    if (tabName === "demos") {
+      setDemoArchivedView(false);
+      fetchTabDetails("demos", false);
+    } else if (tabName !== "dashboard") {
       fetchTabDetails(tabName);
     } else {
       fetchDashboard(token);
@@ -198,13 +274,13 @@ export default function AdminPage() {
   // LOGIN VIEW
   if (!token) {
     return (
-      <div className="flex-1 flex items-center justify-center py-12 px-6">
+      <div className="admin-panel-root flex-1 flex items-center justify-center py-12 px-6">
         <div className="w-full max-w-md bg-white border border-slate-300 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
           <div className="text-center flex flex-col gap-2 mb-8 relative z-10">
             <span className="text-xs uppercase font-extrabold text-[#008f60] font-mono tracking-wider">Restricted Access</span>
             <h1 className="text-3xl font-black text-slate-950 tracking-tight">Admin Login</h1>
             <p className="text-slate-700 text-xs font-medium leading-relaxed">
-              Authenticate using your Django superuser credentials to manage leads and publish articles.
+              Authenticate using your credentials to manage leads and publish articles.
             </p>
           </div>
 
@@ -241,7 +317,7 @@ export default function AdminPage() {
               disabled={loading}
               className="w-full py-3 bg-[#00b87c] hover:bg-[#008f60] text-white rounded-full font-extrabold text-xs uppercase tracking-wider transition-colors disabled:opacity-50 cursor-pointer shadow-lg shadow-[#00b87c]/20"
             >
-              {loading ? "Verifying Token..." : "Authenticate"}
+              {loading ? "Verifying Credentials..." : "Authenticate"}
             </button>
           </form>
         </div>
@@ -251,7 +327,7 @@ export default function AdminPage() {
 
   // ADMIN DASHBOARD VIEW
   return (
-    <div className="max-w-7xl mx-auto px-6 w-full py-6 flex flex-col md:grid md:grid-cols-12 gap-8 items-start">
+    <div className="admin-panel-root max-w-7xl mx-auto px-6 w-full py-6 flex flex-col md:grid md:grid-cols-12 gap-8 items-start">
       {/* Sidebar Navigation */}
       <div className="md:col-span-3 w-full bg-white border border-slate-300 rounded-3xl p-4 flex flex-col gap-1.5 shadow-md">
         <div className="text-xs uppercase font-extrabold text-slate-500 tracking-wider mb-2 px-3">Controls</div>
@@ -297,7 +373,7 @@ export default function AdminPage() {
         </button>
 
         <div className="h-px bg-slate-200 my-2"></div>
-        
+
         <button
           onClick={handleLogout}
           className="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-extrabold text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
@@ -311,7 +387,15 @@ export default function AdminPage() {
         {/* Active Tab Header */}
         <div className="border-b border-slate-200 pb-4 mb-6 flex items-center justify-between">
           <h2 className="text-2xl font-black text-slate-950 tracking-tight">
-            {activeTab === "dashboard" ? "Dashboard Metrics" : activeTab === "enquiries" ? "Customer Enquiries" : activeTab === "calls" ? "Scheduled Calls" : activeTab === "demos" ? "Booked Demos" : "Manage Blog Feed"}
+            {activeTab === "dashboard"
+              ? "Dashboard Metrics"
+              : activeTab === "enquiries"
+              ? "Customer Enquiries"
+              : activeTab === "calls"
+              ? "Scheduled Calls"
+              : activeTab === "demos"
+              ? "Booked Demos"
+              : "Manage Blog Feed"}
           </h2>
           {loading && <span className="text-xs text-slate-500 font-mono font-bold">Syncing Database...</span>}
         </div>
@@ -319,20 +403,40 @@ export default function AdminPage() {
         {/* 1. Dashboard Tab */}
         {activeTab === "dashboard" && stats && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <div className="bg-slate-50 border border-slate-300 p-5 rounded-2xl">
-              <div className="text-xs uppercase tracking-wider font-extrabold text-slate-500 mb-1">Enquiries</div>
+            <div
+              onClick={() => handleTabChange("enquiries")}
+              className="bg-slate-50 border border-slate-300 hover:border-[#00b87c] hover:shadow-lg p-5 rounded-2xl cursor-pointer transition-all group"
+            >
+              <div className="text-xs uppercase tracking-wider font-extrabold text-slate-500 mb-1 group-hover:text-[#008f60]">
+                Enquiries ↗
+              </div>
               <div className="text-3xl font-black text-slate-950">{stats.totalEnquiries}</div>
             </div>
-            <div className="bg-slate-50 border border-slate-300 p-5 rounded-2xl">
-              <div className="text-xs uppercase tracking-wider font-extrabold text-slate-500 mb-1">Scheduled Calls</div>
+            <div
+              onClick={() => handleTabChange("calls")}
+              className="bg-slate-50 border border-slate-300 hover:border-[#00b87c] hover:shadow-lg p-5 rounded-2xl cursor-pointer transition-all group"
+            >
+              <div className="text-xs uppercase tracking-wider font-extrabold text-slate-500 mb-1 group-hover:text-[#008f60]">
+                Scheduled Calls ↗
+              </div>
               <div className="text-3xl font-black text-slate-950">{stats.totalCalls}</div>
             </div>
-            <div className="bg-slate-50 border border-slate-300 p-5 rounded-2xl">
-              <div className="text-xs uppercase tracking-wider font-extrabold text-slate-500 mb-1">Demo Bookings</div>
+            <div
+              onClick={() => handleTabChange("demos")}
+              className="bg-slate-50 border border-slate-300 hover:border-[#00b87c] hover:shadow-lg p-5 rounded-2xl cursor-pointer transition-all group"
+            >
+              <div className="text-xs uppercase tracking-wider font-extrabold text-slate-500 mb-1 group-hover:text-[#008f60]">
+                Demo Bookings ↗
+              </div>
               <div className="text-3xl font-black text-slate-950">{stats.totalDemos}</div>
             </div>
-            <div className="bg-slate-50 border border-slate-300 p-5 rounded-2xl">
-              <div className="text-xs uppercase tracking-wider font-extrabold text-slate-500 mb-1">Blog Articles</div>
+            <div
+              onClick={() => handleTabChange("blogs")}
+              className="bg-slate-50 border border-slate-300 hover:border-[#00b87c] hover:shadow-lg p-5 rounded-2xl cursor-pointer transition-all group"
+            >
+              <div className="text-xs uppercase tracking-wider font-extrabold text-slate-500 mb-1 group-hover:text-[#008f60]">
+                Blog Articles ↗
+              </div>
               <div className="text-3xl font-black text-slate-950">{stats.totalBlogs}</div>
             </div>
           </div>
@@ -356,7 +460,9 @@ export default function AdminPage() {
                   <tr key={enq.id} className="hover:bg-slate-50 font-medium">
                     <td className="py-3 px-2">
                       <div className="text-slate-950 font-bold">{enq.name}</div>
-                      <div className="text-[11px] text-slate-600">{enq.email} | {enq.phone || "No phone"}</div>
+                      <div className="text-[11px] text-slate-600">
+                        {enq.email} | {enq.phone || "No phone"}
+                      </div>
                       <div className="text-[11px] text-slate-500 font-mono">{enq.company || "No Company"}</div>
                     </td>
                     <td className="py-3 px-2 font-mono text-xs text-slate-800 font-bold">{enq.enquiry_type}</td>
@@ -402,7 +508,9 @@ export default function AdminPage() {
                   <tr key={call.id} className="hover:bg-slate-50 font-medium">
                     <td className="py-3 px-2">
                       <div className="text-slate-950 font-bold">{call.name}</div>
-                      <div className="text-[11px] text-slate-600">{call.email} | {call.phone}</div>
+                      <div className="text-[11px] text-slate-600">
+                        {call.email} | {call.phone}
+                      </div>
                     </td>
                     <td className="py-3 px-2 text-[#008f60] font-mono font-bold">
                       {new Date(call.scheduled_datetime).toLocaleString()}
@@ -418,35 +526,110 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* 4. Booked Demos Tab */}
+        {/* 4. Booked Demos Tab (With Mark Read, Archive, and Delete features) */}
         {activeTab === "demos" && (
-          <div className="overflow-x-auto text-xs">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="border-b border-slate-300 text-slate-500">
-                  <th className="pb-3 font-extrabold px-2">Client Details</th>
-                  <th className="pb-3 font-extrabold px-2">Service Required</th>
-                  <th className="pb-3 font-extrabold px-2">Booking Datetime</th>
-                  <th className="pb-3 font-extrabold px-2">Logged</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-200">
-                {dataList.map((demo) => (
-                  <tr key={demo.id} className="hover:bg-slate-50 font-medium">
-                    <td className="py-3 px-2">
-                      <div className="text-slate-950 font-bold">{demo.name}</div>
-                      <div className="text-[11px] text-slate-600">{demo.email}</div>
-                      <div className="text-[11px] text-slate-500 font-mono">{demo.company || "No Company"}</div>
-                    </td>
-                    <td className="py-3 px-2 font-bold text-slate-900">{demo.service_required}</td>
-                    <td className="py-3 px-2 text-[#008f60] font-mono font-bold">
-                      {demo.booking_date} @ {demo.booking_time}
-                    </td>
-                    <td className="py-3 px-2 text-slate-600 font-mono">{new Date(demo.created_at).toLocaleDateString()}</td>
+          <div>
+            {/* Active vs Archive Toggle Filter */}
+            <div className="flex items-center gap-2 mb-6 border-b border-slate-200 pb-3">
+              <button
+                onClick={() => {
+                  setDemoArchivedView(false);
+                  fetchTabDetails("demos", false);
+                }}
+                className={`px-4 py-1.5 rounded-full text-xs font-extrabold cursor-pointer transition-colors ${
+                  !demoArchivedView
+                    ? "bg-[#00b87c] text-white"
+                    : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                }`}
+              >
+                Active Bookings
+              </button>
+              <button
+                onClick={() => {
+                  setDemoArchivedView(true);
+                  fetchTabDetails("demos", true);
+                }}
+                className={`px-4 py-1.5 rounded-full text-xs font-extrabold cursor-pointer transition-colors ${
+                  demoArchivedView
+                    ? "bg-[#00b87c] text-white"
+                    : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                }`}
+              >
+                📁 Archived Demos
+              </button>
+            </div>
+
+            <div className="overflow-x-auto text-xs">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b border-slate-300 text-slate-500">
+                    <th className="pb-3 font-extrabold px-2">Client Details</th>
+                    <th className="pb-3 font-extrabold px-2">Service Required</th>
+                    <th className="pb-3 font-extrabold px-2">Booking Datetime</th>
+                    <th className="pb-3 font-extrabold px-2">Read State</th>
+                    <th className="pb-3 font-extrabold px-2 text-right">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-slate-200">
+                  {dataList.length === 0 ? (
+                    <tr>
+                      <td colSpan="5" className="py-8 text-center text-slate-500 font-medium">
+                        No {demoArchivedView ? "archived" : "active"} demo bookings found.
+                      </td>
+                    </tr>
+                  ) : (
+                    dataList.map((demo) => (
+                      <tr key={demo.id} className="hover:bg-slate-50 font-medium">
+                        <td className="py-3 px-2">
+                          <div className="text-slate-950 font-bold flex items-center gap-2">
+                            {demo.name}
+                            {!demo.is_read && (
+                              <span className="w-2 h-2 rounded-full bg-red-500 inline-block" title="Unread"></span>
+                            )}
+                          </div>
+                          <div className="text-[11px] text-slate-600">
+                            {demo.email} {demo.phone ? `| ${demo.phone}` : ""}
+                          </div>
+                          <div className="text-[11px] text-slate-500 font-mono">{demo.company || "No Company"}</div>
+                        </td>
+                        <td className="py-3 px-2 font-bold text-slate-900">{demo.service_required}</td>
+                        <td className="py-3 px-2 text-[#008f60] font-mono font-bold">
+                          {demo.booking_date} @ {demo.booking_time}
+                        </td>
+                        <td className="py-3 px-2">
+                          <button
+                            onClick={() => handleToggleDemoRead(demo.id, demo.is_read)}
+                            className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold cursor-pointer transition-colors ${
+                              demo.is_read
+                                ? "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                                : "bg-blue-100 text-blue-800 hover:bg-blue-200"
+                            }`}
+                          >
+                            {demo.is_read ? "✓ Read" : "● Mark Read"}
+                          </button>
+                        </td>
+                        <td className="py-3 px-2 text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <button
+                              onClick={() => handleToggleDemoArchive(demo.id, demo.is_archived)}
+                              className="px-3 py-1 bg-amber-100 hover:bg-amber-200 text-amber-900 text-[11px] font-extrabold rounded-lg cursor-pointer transition-colors"
+                            >
+                              {demo.is_archived ? "Unarchive" : "Archive"}
+                            </button>
+                            <button
+                              onClick={() => handleDeleteDemo(demo.id)}
+                              className="px-3 py-1 bg-red-100 hover:bg-red-200 text-red-700 text-[11px] font-extrabold rounded-lg cursor-pointer transition-colors"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
 
@@ -455,7 +638,9 @@ export default function AdminPage() {
           <div className="space-y-12">
             {/* Create Blog Form */}
             <div className="bg-slate-50 border border-slate-300 p-6 rounded-2xl">
-              <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#008f60] mb-4">Publish a new article</h3>
+              <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#008f60] mb-4">
+                Publish a new article
+              </h3>
               {blogSuccess && (
                 <div className="bg-emerald-50 border border-emerald-300 text-emerald-800 px-4 py-2.5 rounded-lg text-xs mb-4 font-bold">
                   Article published successfully!
@@ -515,7 +700,9 @@ export default function AdminPage() {
                 </div>
 
                 <div>
-                  <label className="block text-slate-900 font-extrabold mb-1">Content (Markdown supported) *</label>
+                  <label className="block text-slate-900 font-extrabold mb-1">
+                    Content (Markdown supported) *
+                  </label>
                   <textarea
                     required
                     rows="5"
@@ -542,8 +729,20 @@ export default function AdminPage() {
                 {dataList.map((post) => (
                   <div key={post.id} className="py-3 flex items-center justify-between text-xs gap-4 font-medium">
                     <div>
-                      <h4 className="font-bold text-slate-950">{post.title}</h4>
-                      <span className="text-[11px] text-slate-500 font-mono">Category: {post.category_name} | Slug: {post.slug}</span>
+                      <a
+                        href={`/blog/${post.slug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-bold text-slate-950 hover:text-[#00b87c] hover:underline flex items-center gap-1 group"
+                      >
+                        {post.title}
+                        <span className="text-slate-400 group-hover:text-[#00b87c] transition-colors text-[10px]">
+                          ↗
+                        </span>
+                      </a>
+                      <span className="text-[11px] text-slate-500 font-mono">
+                        Category: {post.category_name} | Slug: {post.slug}
+                      </span>
                     </div>
                     <button
                       onClick={() => handleDeleteBlog(post.id)}
