@@ -7,6 +7,13 @@
 
 set -e
 
+# Ensure NVM & modern Node.js (v22) environment is loaded
+export NVM_DIR="$HOME/.nvm"
+if [ -s "$NVM_DIR/nvm.sh" ]; then
+    . "$NVM_DIR/nvm.sh"
+fi
+export PATH="$HOME/.nvm/versions/node/v22.23.1/bin:$HOME/.local/bin:$PATH"
+
 # ANSI Color Codes
 GREEN='\033[0;32m'
 CYAN='\033[0;36m'
